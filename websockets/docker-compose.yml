@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  server:
+    container_name: websockets-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+      args:
+        - GID=${GID:-1000}
+        - UID=${UID:-1000}
+        - USER=${USER:-websockets}
+    entrypoint: ["npm"]
+    command: ["run", "start:dev"]
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=development
+      - PORT=5001
+    ports:
+      - "5001:5001"
