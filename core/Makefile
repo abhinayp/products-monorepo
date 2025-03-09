@@ -8,7 +8,7 @@ up:
 
 down:
 	${MAKE} stop-services
-	docker network rm $(NETWORK_NAME)
+	docker network rm $(NETWORK_NAME) || true
 
 reload: down up
 

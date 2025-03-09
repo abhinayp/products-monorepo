@@ -22,5 +22,6 @@ API Gateway - http://localhost:4000
 | Orders        | http://localhost:4002      | http://localhost:4000/orders        |
 | Cart          | http://localhost:4003      | http://localhost:4000/cart          |
 | Notifications | http://localhost:4004      | http://localhost:4000/notifications |
+| Payments      | http://localhost:4005      | http://localhost:4000/payments      |
 
 

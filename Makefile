@@ -1,5 +1,5 @@
 SETUP_DIR := core
-MICROSERVICES := inventory orders cart notifications api-gateway websockets frontend
+MICROSERVICES := inventory orders cart notifications payments api-gateway websockets frontend
 
 .PHONY: up down
 
