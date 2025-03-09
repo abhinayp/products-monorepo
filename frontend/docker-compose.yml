@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  server:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+      args:
+        - GID=${GID:-1000}
+        - UID=${UID:-1000}
+        - USER=${USER:-frontend}
+    entrypoint: ["npm"]
+    command: ["run", "dev"]
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "3000:3000"
