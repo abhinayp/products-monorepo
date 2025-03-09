@@ -22,3 +22,11 @@ setup:
 
 clean:
 	$(MAKE) -C $(SETUP_DIR) down
+
+clear-cache:
+	@for dir in $(MICROSERVICES); do \
+		$(MAKE) -C $$dir clear-cache || true; \
+	done
+
+system-prune:
+	docker system prune --all

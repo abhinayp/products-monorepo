@@ -12,7 +12,8 @@ ARG RUBY_VERSION=3.4.2
 FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 
 # Rails app lives here
-WORKDIR /rails
+ARG APP_ROOT=/rails
+WORKDIR $APP_ROOT
 
 # Install base packages
 RUN apt-get update -qq && \
@@ -24,17 +25,17 @@ FROM base AS dev-build
 # Set development environment
 ENV RAILS_ENV="development" \
     BUNDLE_DEPLOYMENT="0" \
-    BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="production"
+
+ENV BUNDLE_PATH="${APP_ROOT}/vendor/bundle"
+ENV PATH="${APP_ROOT}/vendor/bundle/ruby/${RUBY_VERSION}/bin:${PATH}"
+ENV GEM_HOME="${APP_ROOT}/vendor/bundle/ruby/${RUBY_VERSION}"
+ENV GEM_PATH="${APP_ROOT}/vendor/bundle/ruby/${RUBY_VERSION}/gems"
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libpq-dev pkg-config libyaml-dev && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-# Install application gems
-COPY Gemfile Gemfile.lock ./
-RUN bundle install
 
 
 # Throw-away build stage to reduce size of final image
