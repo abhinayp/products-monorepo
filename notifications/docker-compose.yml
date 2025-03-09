@@ -28,6 +28,7 @@ services:
       DATABASE_DB: notifications
       DATABASE_PORT: 5435
       PORT: 4004
+      APPLICATION_HOST: notifications-server:4004
     ports:
       - "4004:4004"
     depends_on:

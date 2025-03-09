@@ -1,5 +1,5 @@
 SETUP_DIR := core
-MICROSERVICES := inventory orders cart notifications
+MICROSERVICES := inventory orders cart notifications api-gateway
 
 .PHONY: up down
 

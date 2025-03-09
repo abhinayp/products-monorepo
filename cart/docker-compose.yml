@@ -28,6 +28,7 @@ services:
       DATABASE_DB: cart
       DATABASE_PORT: 5434
       PORT: 4003
+      APPLICATION_HOST: cart-server:4003
     ports:
       - "4003:4003"
     depends_on:

@@ -1,0 +1,32 @@
+server {
+  listen 80;
+
+  location /healthcheck {
+    add_header 'Content-Type' 'application/json';
+    return 200 '{"status":"ok"}';
+  }
+
+  location /inventory {
+    rewrite ^inventory(.*) $1 break;
+    proxy_pass http://inventory-server:4001/;
+    proxy_set_header Host $host;
+  }
+
+  location /orders {
+    rewrite ^orders(.*) $1 break;
+    proxy_pass http://orders-server:4002/;
+    proxy_set_header Host $host;
+  }
+
+  location /cart {
+    rewrite ^cart(.*) $1 break;
+    proxy_pass http://cart-server:4003/;
+    proxy_set_header Host $host;
+  }
+
+  location /notifications {
+    rewrite ^notifications(.*) $1 break;
+    proxy_pass http://notifications-server:4004/;
+    proxy_set_header Host $host;
+  }
+}

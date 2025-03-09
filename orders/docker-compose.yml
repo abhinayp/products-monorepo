@@ -28,6 +28,7 @@ services:
       DATABASE_DB: orders
       DATABASE_PORT: 5433
       PORT: 4002
+      APPLICATION_HOST: orders-server:4002
     ports:
       - "4002:4002"
     depends_on:
