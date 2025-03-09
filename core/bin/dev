@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Create a Docker external network named 'products'
+docker network create products

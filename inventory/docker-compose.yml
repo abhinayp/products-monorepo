@@ -1,0 +1,39 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: inventory
+    ports:
+      - "5432:5432"
+    container_name: inventory-db
+
+  server:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev-build
+    entrypoint: ["bin/rails"]
+    command: ["s", '-b', '0.0.0.0']
+    volumes:
+      - .:/rails
+    environment:
+      DATABASE_HOST: inventory-db
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+      DATABASE_DB: inventory
+      DATABASE_PORT: 5432
+      PORT: 4001
+    ports:
+      - "4001:4001"
+    depends_on:
+      - postgres
+    container_name: inventory-server
+
+networks:
+  default:
+    external:
+      name: products
