@@ -7,8 +7,8 @@ up:
 	${MAKE} start-services
 
 down:
-	docker network rm $(NETWORK_NAME)
 	${MAKE} stop-services
+	docker network rm $(NETWORK_NAME)
 
 reload: down up
 
