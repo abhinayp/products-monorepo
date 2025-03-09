@@ -1,0 +1,40 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:latest
+    command: ["postgres", "-p", "5435"]
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: notifications
+    ports:
+      - "5435"
+    container_name: notifications-db
+
+  server:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev-build
+    entrypoint: ["bin/rails"]
+    command: ["s", '-b', '0.0.0.0']
+    volumes:
+      - .:/rails
+    environment:
+      DATABASE_HOST: notifications-db
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+      DATABASE_DB: notifications
+      DATABASE_PORT: 5435
+      PORT: 4004
+    ports:
+      - "4004:4004"
+    depends_on:
+      - postgres
+    container_name: notifications-server
+
+networks:
+  default:
+    external:
+      name: products

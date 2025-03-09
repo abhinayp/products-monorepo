@@ -1,0 +1,40 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:latest
+    command: ["postgres", "-p", "5434"]
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: cart
+    ports:
+      - "5434"
+    container_name: cart-db
+
+  server:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev-build
+    entrypoint: ["bin/rails"]
+    command: ["s", '-b', '0.0.0.0']
+    volumes:
+      - .:/rails
+    environment:
+      DATABASE_HOST: cart-db
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+      DATABASE_DB: cart
+      DATABASE_PORT: 5434
+      PORT: 4003
+    ports:
+      - "4003:4003"
+    depends_on:
+      - postgres
+    container_name: cart-server
+
+networks:
+  default:
+    external:
+      name: products

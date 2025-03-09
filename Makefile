@@ -1,5 +1,5 @@
 SETUP_DIR := core
-MICROSERVICES := inventory
+MICROSERVICES := inventory orders cart notifications
 
 .PHONY: up down
 
@@ -13,6 +13,8 @@ down:
 		$(MAKE) -C $$dir down; \
 	done
 	$(MAKE) clean
+
+reload: down up
 
 # setup and cleanup
 setup:

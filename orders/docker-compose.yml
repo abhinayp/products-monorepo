@@ -1,0 +1,40 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:latest
+    command: ["postgres", "-p", "5433"]
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: orders
+    ports:
+      - "5433"
+    container_name: orders-db
+
+  server:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev-build
+    entrypoint: ["bin/rails"]
+    command: ["s", '-b', '0.0.0.0']
+    volumes:
+      - .:/rails
+    environment:
+      DATABASE_HOST: orders-db
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+      DATABASE_DB: orders
+      DATABASE_PORT: 5433
+      PORT: 4002
+    ports:
+      - "4002:4002"
+    depends_on:
+      - postgres
+    container_name: orders-server
+
+networks:
+  default:
+    external:
+      name: products
