@@ -3,7 +3,7 @@
 NETWORK_NAME=products
 
 up:
-	docker network create $(NETWORK_NAME)
+	docker network create $(NETWORK_NAME) || true
 	${MAKE} start-services
 
 down:

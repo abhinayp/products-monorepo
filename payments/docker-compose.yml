@@ -28,13 +28,31 @@ services:
       DATABASE_DB: payments
       DATABASE_PORT: 5436
       PORT: 4005
-      APPLICATION_HOST: payments-server:4002
+      APPLICATION_HOST: payments-server:4005
     ports:
       - "4005:4005"
     depends_on:
       - postgres
     container_name: payments-server
-
+  kafka-consumer:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev-build
+    entrypoint: ["bin/bundle"]
+    command: ["exec", "karafka", "server"]
+    volumes:
+      - .:/rails
+    environment:
+      DATABASE_HOST: payments-db
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+      DATABASE_DB: payments
+      DATABASE_PORT: 5436
+      APPLICATION_HOST: payments-server:4005
+    depends_on:
+      - postgres
+    container_name: kafka-consumer
 networks:
   default:
     external:
