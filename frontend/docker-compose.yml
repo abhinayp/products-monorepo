@@ -17,5 +17,6 @@ services:
       - .:/app
     environment:
       - NODE_ENV=development
+      - NEXT_PUBLIC_API_GATEWAY_HOST=http://localhost:4000
     ports:
       - "3000:3000"

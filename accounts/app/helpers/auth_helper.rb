@@ -13,12 +13,16 @@ module AuthHelper
     access_token
   end
 
-  def logout
+  def _logout
     cookies.delete(:_access_token, domain: :all)
   end
 
+  def logout
+    _logout
+  end
+
   def generate_token(user_id)
-    private_key = OpenSSL::PKey::RSA.new(Rails.application.credentials.jwt_private_key)
+    private_key = OpenSSL::PKey::RSA.new(Rails.application.credentials.auth_private_key)
     JWT.encode({ user_id: user_id }, private_key, 'RS256')
   end
 end

@@ -13,7 +13,7 @@ class AuthController < ApplicationController
   end
 
   def logout
-    helpers.logout
+    _logout
     head :no_content
   end
 end

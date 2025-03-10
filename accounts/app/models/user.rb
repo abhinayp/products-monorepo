@@ -13,4 +13,14 @@ class User < ApplicationRecord
   def authenticate(password)
     Password.new(password_digest) == password
   end
+
+  def non_sensitive_data
+    {
+      id: id,
+      email: email,
+      firstname: firstname,
+      lastname: lastname,
+      phone: phone,
+    }
+  end
 end

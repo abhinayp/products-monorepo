@@ -8,7 +8,10 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  resource :users, only: %i[create show]
+  resource :users, only: %i[create] do
+    get "me", to: "users#me", on: :collection
+  end
+
   resource :auth, only: %i[] do
     post "authorize", to: "auth#authorize", on: :collection
     delete "logout", to: "auth#logout", on: :collection

@@ -4,23 +4,27 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-
+import useLoginForm from "./useLoginForm"
 export function LoginForm({
   className,
   ...props
-}: React.ComponentProps<"form">) {
+}: React.ComponentProps<"div">) {
+  const { email, password, handleSubmit, isPending, isSuccess, isError, setEmail, setPassword, disabled, onKeyDown } = useLoginForm()
+
+  const description = isError ? "Invalid email or password" : "Enter your email below to login to your account"
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Login to your account</h1>
-        <p className="text-muted-foreground text-sm text-balance">
-          Enter your email below to login to your account
+        <p className={cn("text-sm text-balance", isError ? "text-destructive" : "text-muted-foreground")}>
+          {description}
         </p>
       </div>
       <div className="grid gap-6">
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+          <Input id="email" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} disabled={disabled} onKeyDown={onKeyDown} />
         </div>
         <div className="grid gap-3">
           <div className="flex items-center">
@@ -32,10 +36,10 @@ export function LoginForm({
               Forgot your password?
             </a> */}
           </div>
-          <Input id="password" type="password" required />
+          <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} disabled={disabled} onKeyDown={onKeyDown} />
         </div>
-        <Button type="submit" className="w-full">
-          Login
+        <Button type="button" className="w-full" onClick={handleSubmit} disabled={disabled}>
+          {isPending || isSuccess ? "Logging in..." : "Login"}
         </Button>
         <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
           <span className="bg-background text-muted-foreground relative z-10 px-2">
@@ -49,6 +53,6 @@ export function LoginForm({
           Sign up
         </Link>
       </div>
-    </form>
+    </div>
   )
 }

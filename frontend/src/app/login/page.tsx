@@ -1,10 +1,42 @@
+"use client"
 import { GalleryVerticalEnd } from "lucide-react"
 
-import { LoginForm } from "@/components/login-form"
+import { LoginForm } from "@/app/login/components/LoginForm"
 import Image from "next/image"
 import LoginPoster from "../../../public/login_poster.jpg"
+import { userClient } from "@/api-client/accounts/user.client"
+import { useQuery } from "@tanstack/react-query"
+import { Card, CardHeader, CardTitle } from "@/components/ui/card"
+import { Container } from "@/components/ui/container"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 export default function LoginPage() {
+  const router = useRouter()
+  const { data: user, isLoading } = useQuery({
+    queryKey: ['user'],
+    queryFn: () => userClient.me(),
+    retry: false,
+  })
+
+  useEffect(() => {
+    if (user) {
+      router.push('/')
+    }
+  }, [user])
+
+  if (isLoading || user) {
+    return (
+      <Container centerOnPage>
+        <Card>
+          <CardHeader>
+            <CardTitle>Loading...</CardTitle>
+          </CardHeader>
+        </Card>
+      </Container>
+    )
+  }
+
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
