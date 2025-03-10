@@ -36,7 +36,27 @@ services:
     depends_on:
       - postgres
     container_name: inventory-server
-
+  kafka-consumer:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev-build
+    entrypoint: ["bin/bundle"]
+    command: ["exec", "karafka", "server"]
+    volumes:
+      - .:/rails
+    environment:
+      DATABASE_HOST: inventory-db
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+      DATABASE_DB: inventory
+      DATABASE_PORT: 5432
+      PORT: 4001
+      APPLICATION_HOST: inventory-server:4001
+      CORS_ORIGINS: "http://localhost:3000"
+    depends_on:
+      - postgres
+    container_name: inventory-consumer-group
 networks:
   default:
     external:
