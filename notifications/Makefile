@@ -1,6 +1,6 @@
-.PHONY: up down migrate build reload restart install clean
+.PHONY: up down migrate build reload restart install clean logs shell
 
-up: install migrate
+up: build install migrate
 	docker compose up -d
 
 down:
@@ -22,5 +22,9 @@ install:
 
 clear-cache:
 	rm -rf vendor/bundle
-	rm -rf tmp/*
-	rm -rf log/*
+
+logs:
+	docker compose logs -f
+
+shell:
+	docker compose exec server bash

@@ -47,3 +47,6 @@ group :development, :test do
 end
 
 
+gem "bcrypt"
+gem 'jwt', '~> 2.10', '>= 2.10.1'
+gem 'rack-cors', :require => 'rack/cors'
