@@ -10,5 +10,5 @@ Rails.application.routes.draw do
 
   get "/", to: "home#index"
 
-  resources :items, only: %i[create]
+  resources :items, only: [:create, :update, :destroy]
 end
