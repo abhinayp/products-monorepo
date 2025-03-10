@@ -9,4 +9,6 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   get "/", to: "home#index"
+
+  resources :items, only: %i[create]
 end

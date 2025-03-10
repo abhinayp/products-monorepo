@@ -1,6 +1,12 @@
 class ApplicationController < ActionController::API
   include ActionController::Cookies
 
+  def authenticate_server!
+    code = "password"
+    authorization_header = request.headers['Authorization']
+    head :unauthorized unless authorization_header == code
+  end
+
   def authenticate_user!
     head :unauthorized unless current_user
   end
