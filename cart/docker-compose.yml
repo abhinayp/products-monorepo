@@ -4,6 +4,8 @@ services:
   postgres:
     image: postgres:latest
     command: ["postgres", "-p", "5434"]
+    volumes:
+      - cart-db-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -40,3 +42,6 @@ networks:
   default:
     external:
       name: products
+
+volumes:
+  cart-db-data:
