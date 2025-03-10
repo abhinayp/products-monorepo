@@ -23,5 +23,6 @@ API Gateway - http://localhost:4000
 | Cart          | http://localhost:4003      | http://localhost:4000/cart          |
 | Notifications | http://localhost:4004      | http://localhost:4000/notifications |
 | Payments      | http://localhost:4005      | http://localhost:4000/payments      |
+| Accounts      | http://localhost:4006      | http://localhost:4000/accounts      |
 
 

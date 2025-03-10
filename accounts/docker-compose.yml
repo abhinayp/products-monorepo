@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:latest
+    command: ["postgres", "-p", "5436"]
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: accounts
+    ports:
+      - "5436"
+    container_name: accounts-db
+
+  server:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev-build
+    entrypoint: ["bin/rails"]
+    command: ["s", '-b', '0.0.0.0']
+    volumes:
+      - .:/rails
+    environment:
+      DATABASE_HOST: accounts-db
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+      DATABASE_DB: accounts
+      DATABASE_PORT: 5436
+      PORT: 4006
+      APPLICATION_HOST: accounts-server:4006
+    ports:
+      - "4006:4006"
+    depends_on:
+      - postgres
+    container_name: accounts-server
+
+networks:
+  default:
+    external:
+      name: products
