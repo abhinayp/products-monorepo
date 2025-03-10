@@ -29,4 +29,10 @@ server {
     proxy_pass http://notifications-server:4004/;
     proxy_set_header Host $host;
   }
+
+  location /payments {
+    rewrite ^payments(.*) $1 break;
+    proxy_pass http://payments-server:4005/;
+    proxy_set_header Host $host;
+  }
 }
