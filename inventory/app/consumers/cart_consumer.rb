@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Inventory consumer that prints messages payloads
-class InventoryConsumer < ApplicationConsumer
+class CartConsumer < ApplicationConsumer
   def consume
     messages.each do |message|
       payload = message.payload

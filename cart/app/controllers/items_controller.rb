@@ -11,7 +11,7 @@ class ItemsController < ApplicationController
     data = CartItem.add_product(item_params)
     if data
       cart = data[:cart]
-      InventoryProducer.update_cart_metrics(product_id: cart.product_id, new_item_count: item_params['count'])
+      CartProducer.update_metrics(product_id: cart.product_id, new_item_count: item_params['count'])
       render json: data, status: :created
     else
       render json: { errors: "creation failed" }, status: :unprocessable_entity
