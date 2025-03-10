@@ -1,4 +1,4 @@
-.PHONY: up down migrate build reload restart install clean logs shell
+.PHONY: up down migrate build reload restart install clean logs shell clear-cache seed
 
 up: build install migrate
 	docker compose up -d
@@ -11,6 +11,9 @@ build:
 
 migrate:
 	docker compose run --rm server db:migrate
+
+seed:
+	docker compose run --rm server db:seed
 
 reload: down up
 
