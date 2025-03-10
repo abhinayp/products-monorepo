@@ -3,6 +3,8 @@ version: "3.7"
 services:
   postgres:
     image: postgres:latest
+    volumes:
+      - inventory-db-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -28,6 +30,7 @@ services:
       DATABASE_PORT: 5432
       PORT: 4001
       APPLICATION_HOST: inventory-server:4001
+      CORS_ORIGINS: "http://localhost:3000"
     ports:
       - "4001:4001"
     depends_on:
@@ -38,3 +41,6 @@ networks:
   default:
     external:
       name: products
+
+volumes:
+  inventory-db-data:

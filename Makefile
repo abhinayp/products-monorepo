@@ -3,6 +3,10 @@ MICROSERVICES := inventory orders cart notifications payments accounts api-gatew
 
 .PHONY: up down reload setup clean clear-cache system-prune logs shell
 
+ifneq ($(service),)
+MICROSERVICES := $(service)
+SETUP_DIR :=
+endif
 up: setup
 	@for dir in $(MICROSERVICES); do \
 		$(MAKE) -C $$dir up; \
@@ -18,10 +22,14 @@ reload: down up
 
 # setup and cleanup
 setup:
-	$(MAKE) -C $(SETUP_DIR) up
+	@if [ -d "$(SETUP_DIR)" ]; then \
+		$(MAKE) -C $(SETUP_DIR) up; \
+	fi
 
 clean:
-	$(MAKE) -C $(SETUP_DIR) down
+	@if [ -d "$(SETUP_DIR)" ]; then \
+		$(MAKE) -C $(SETUP_DIR) clean; \
+	fi
 
 clear-cache:
 	@for dir in $(MICROSERVICES); do \
@@ -44,3 +52,8 @@ shell:
 		exit 1; \
 	fi
 	$(MAKE) -C $(service) shell;
+
+install:
+	@for dir in $(MICROSERVICES); do \
+		$(MAKE) -C $$dir install; \
+	done
