@@ -28,7 +28,7 @@ setup:
 
 clean:
 	@if [ -d "$(SETUP_DIR)" ]; then \
-		$(MAKE) -C $(SETUP_DIR) clean; \
+		$(MAKE) -C $(SETUP_DIR) down; \
 	fi
 
 clear-cache:
