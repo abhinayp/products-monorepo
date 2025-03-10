@@ -10,8 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 0) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_10_054402) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
+  create_table "cart_items", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "product_id"
+    t.integer "count"
+    t.decimal "unit_price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_cart_items_on_product_id"
+    t.index ["user_id"], name: "index_cart_items_on_user_id"
+  end
+
+  create_table "cart_metadata", force: :cascade do |t|
+    t.integer "user_id"
+    t.decimal "gross_total_price"
+    t.decimal "tax"
+    t.decimal "net_total_price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_cart_metadata_on_user_id"
+  end
 end
