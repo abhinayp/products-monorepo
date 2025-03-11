@@ -2,9 +2,9 @@
 
 import { userClient } from '@/api-client/accounts/user.client'
 import { useQuery } from '@tanstack/react-query'
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useState, ReactNode, useMemo } from 'react'
 
-interface User {
+type User = {
   id: number
   email: string
   firstname: string
@@ -16,6 +16,7 @@ interface GlobalContextType {
   currentUser: User | null | undefined
   currentUserLoading: boolean
   isAuthenticated: boolean
+  refetchCurrentUser: () => void
 }
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined)
@@ -33,16 +34,23 @@ interface GlobalProviderProps {
 }
 
 export function GlobalProvider({ children }: GlobalProviderProps) {
-  const { data: currentUser, isLoading, isSuccess } = useQuery({
+  const { data: user, isLoading, isSuccess, refetch: refetchCurrentUser } = useQuery({
     queryKey: ['user'],
     queryFn: () => userClient.me(),
-    retry: false,
   })
+
+  const currentUser = useMemo(() => {
+    if (user && 'error' in user) {
+      return null
+    }
+    return user
+  }, [user])
 
   const value = {
     currentUser,
     currentUserLoading: isLoading,
-    isAuthenticated: isSuccess
+    isAuthenticated: !!currentUser,
+    refetchCurrentUser,
   }
 
   return (

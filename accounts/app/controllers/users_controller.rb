@@ -1,8 +1,6 @@
 class UsersController < ApplicationController
   include AuthHelper
 
-  before_action :authenticate_user!, only: [:me]
-
   def create
     required_params = %i[firstname lastname email phone password]
     missing_params = required_params.select { |param| user_params[param].blank? }
@@ -24,7 +22,7 @@ class UsersController < ApplicationController
 
   def me
     if current_user.blank?
-      render json: { error: 'Unauthorized' }, status: :unauthorized
+      render json: { error: 'Unauthorized' }
       return
     end
 

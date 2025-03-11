@@ -1,14 +1,14 @@
 "use client"
 import { GalleryVerticalEnd } from "lucide-react"
 
-import { LoginForm } from "@/app/login/components/LoginForm"
+import { LoginForm } from "@/app/(no_header)/login/components/LoginForm"
 import Image from "next/image"
-import LoginPoster from "../../../public/login_poster.jpg"
+import LoginPoster from "../../../../public/login_poster.jpg"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Container } from "@/components/ui/container"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
-import { useGlobal } from "../GlobalContext"
+import { useGlobal } from "../../GlobalContext"
 export default function LoginPage() {
   const router = useRouter()
   const { currentUser, currentUserLoading } = useGlobal()
@@ -35,7 +35,7 @@ export default function LoginPage() {
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-start">
-          <a href="#" className="flex items-center gap-2 font-medium">
+          <a href="/" className="flex items-center gap-2 font-medium">
             <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
               <GalleryVerticalEnd className="size-4" />
             </div>

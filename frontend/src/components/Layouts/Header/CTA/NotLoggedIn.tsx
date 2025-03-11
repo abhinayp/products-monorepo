@@ -1,19 +1,18 @@
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import React from 'react'
 
 const NotLoggedIn = () => {
   return (
     <>
       <Button variant="ghost" size="sm" asChild>
-        <Link href="/login">
+        <a href="/login">
           Sign in
-        </Link>
+        </a>
       </Button>
       <Button size="sm" asChild>
-        <Link href="/signup">
+        <a href="/signup">
           Sign up
-        </Link>
+        </a>
       </Button>
     </>
   )
