@@ -3,6 +3,10 @@ This is a E Commerce web application build using event based architecture
 
 ## Quick Start
 To start the web app
+### Step 1:
+Install and Start Docker
+
+### Step 2:
 ```bash
 make up
 ```
