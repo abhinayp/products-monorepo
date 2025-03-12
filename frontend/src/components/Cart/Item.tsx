@@ -59,15 +59,15 @@ const Item = ({ item }: ItemProps) => {
     <div key={item.id} className="flex gap-4 p-4 border-b">
       <div className="relative h-16 w-16 overflow-hidden rounded-md">
         <Image
-          src={item.product.image_url}
-          alt={item.product.title}
+          src={item.product?.image_url}
+          alt={item.product?.title}
           fill
           className="object-cover"
         />
       </div>
       <div className="flex flex-1 flex-col">
         <div className="flex justify-between">
-          <div className="font-medium">{item.product.title}</div>
+          <div className="font-medium">{item.product?.title}</div>
           <div className="font-medium">{formatToDollars(totalPrice)}</div>
         </div>
         <div className="flex items-center gap-2 mt-2">

@@ -33,7 +33,7 @@ class ProductsController < ApplicationController
   end
 
   def get_all_products
-    product_ids = params[:ids]
+    product_ids = params[:ids].split(',')
     products = Product.where(id: product_ids)
     render json: products
   end
