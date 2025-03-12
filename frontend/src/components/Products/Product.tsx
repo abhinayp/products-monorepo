@@ -45,7 +45,7 @@ const Product = (product: Props) => {
         />
       </div>
       <CardContent className="p-4">
-        <div className="text-sm text-muted-foreground mb-1">{product.category}</div>
+        <div className="text-sm text-muted-foreground mb-1 capitalize">{product.category}</div>
         <h3 className="font-medium text-lg truncate">{product.title}</h3>
         <p className="text-sm text-muted-foreground line-clamp-2 h-10">{product.description}</p>
       </CardContent>

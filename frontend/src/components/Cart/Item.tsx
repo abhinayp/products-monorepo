@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Minus, Plus, Trash2 } from 'lucide-react'
 import { CartItemDTO } from '@/api-client/cart/dto/cart.dto'
@@ -12,6 +12,7 @@ interface ItemProps {
 }
 
 const Item = ({ item }: ItemProps) => {
+  const [count, setCount] = useState(item.count)
   const queryClient = useQueryClient()
   const updateCartItem = useMutation({
     mutationFn: ({ itemId, count }: { itemId: number; count: number }) =>
@@ -28,10 +29,15 @@ const Item = ({ item }: ItemProps) => {
     },
   })
 
+  useEffect(() => {
+    setCount(item.count)
+  }, [item.count])
+
   const totalPrice = Number(item.unit_price || 0) * Number(item.count || 0)
 
   const handleQuantityChange = (item: CartItemDTO, change: number) => {
     const newQuantity = item.count + change
+    setCount(newQuantity)
     if (newQuantity < 1) {
       removeCartItem.mutate(item.id)
     } else {
@@ -63,7 +69,7 @@ const Item = ({ item }: ItemProps) => {
           >
             <Minus className="h-3 w-3" />
           </Button>
-          <span className="w-8 text-center">{item.count}</span>
+          <span className="w-8 text-center">{count}</span>
           <Button
             variant="outline"
             size="icon"
@@ -77,8 +83,9 @@ const Item = ({ item }: ItemProps) => {
             size="icon"
             className="h-8 w-8 ml-auto"
             onClick={() => removeCartItem.mutate(item.id)}
+            disabled={removeCartItem.isPending}
           >
-            <Trash2 className="h-4 w-4" />
+            {removeCartItem.isPending ? "Removing..." : <Trash2 className="h-4 w-4" />}
           </Button>
         </div>
       </div>

@@ -44,7 +44,10 @@ export function Cart() {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Shopping Cart</SheetTitle>
+          <SheetTitle className="flex items-center gap-2">
+            <ShoppingCart className="h-5 w-5" />
+            Shopping Cart
+          </SheetTitle>
         </SheetHeader>
 
         {isLoading ? (
@@ -58,7 +61,7 @@ export function Cart() {
           </div>
         ) : (
           <div className="flex flex-col h-full">
-            <div className="flex-1 overflow-auto py-6">
+            <div className="flex-1 overflow-auto pb-6">
               <div className="space-y-4">
                 {cartData.cart.map((item) => (
                   <Item key={item.id} item={item} />
@@ -66,11 +69,21 @@ export function Cart() {
               </div>
             </div>
             <div className="border-t p-4">
+              <div className="flex justify-between text-sm py-1">
+                <span className="text-muted-foreground">Subtotal</span>
+                <span className="text-muted-foreground">{formatToDollars(cartData?.cart_metadata?.net_total_price || 0)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Tax</span>
+                <span className="text-muted-foreground">{formatToDollars(cartData?.cart_metadata?.tax || 0)}</span>
+              </div>
               <div className="flex justify-between py-2">
                 <span className="font-medium">Total</span>
                 <span className="font-medium">{formatToDollars(cartTotal)}</span>
               </div>
-              <Button className="w-full">Checkout</Button>
+              <div className="pt-2">
+                <Button className="w-full">Checkout</Button>
+              </div>
             </div>
           </div>
         )}
