@@ -8,8 +8,10 @@ import { useQuery } from '@tanstack/react-query'
 import { itemsClient } from '@/api-client/cart/items.client'
 import Item from './Item'
 import { formatToDollars } from '@/helpers/common.helper'
+import { useGlobal } from '@/app/GlobalContext'
+
 export function Cart() {
-  const [open, setOpen] = React.useState(false)
+  const { showCart, setShowCart } = useGlobal()
 
   const { data: cartData, isLoading, refetch } = useQuery({
     queryKey: ['cart'],
@@ -20,13 +22,13 @@ export function Cart() {
   const cartTotal = Number(cartData?.cart_metadata?.net_total_price) || 0
 
   useEffect(() => {
-    if (open) {
+    if (showCart) {
       refetch()
     }
-  }, [open])
+  }, [showCart])
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={showCart} onOpenChange={setShowCart}>
       <SheetTrigger asChild>
         <Button
           variant="ghost"

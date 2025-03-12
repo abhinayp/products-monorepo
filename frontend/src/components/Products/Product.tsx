@@ -6,6 +6,9 @@ import { Button } from "../ui/button"
 import { ChevronDown, Heart, ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { useGlobal } from "@/app/GlobalContext"
+import { useMutation } from "@tanstack/react-query"
+import { productsClient } from "@/api-client/inventory/products.client"
 
 interface Props {
   id: number
@@ -20,6 +23,15 @@ interface Props {
 }
 
 const Product = (product: Props) => {
+  const { setShowCart } = useGlobal()
+
+  const { mutate: addToCart, isPending } = useMutation({
+    mutationFn: () => productsClient.addToCart({ id: product.id }),
+    onSuccess: () => {
+      setShowCart(true)
+    },
+  })
+
   return (
     <Card key={product.id} className="overflow-hidden group p-0">
     <div className="relative block">
@@ -39,8 +51,8 @@ const Product = (product: Props) => {
       </CardContent>
       <CardFooter className="flex items-center justify-between p-4 pt-0">
         <span className="font-semibold">${Number(product.price).toFixed(2)}</span>
-          <Button size="sm">
-            Add to Cart
+          <Button size="sm" onClick={() => addToCart()} disabled={isPending}>
+            {isPending ? "Adding..." : "Add to Cart"}
             {/* <ChevronDown className="h-4 w-4 ml-1" /> */}
           </Button>
       </CardFooter>

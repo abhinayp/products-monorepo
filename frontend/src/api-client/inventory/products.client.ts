@@ -18,7 +18,12 @@ export class ProductsClient extends InventoryClient {
   }
 
   async addToCart(params: AddToCartDTO['request']['params']) {
-    const response = await this.fetch(`/products/${params.id}/add-to-cart`)
+    const response = await this.fetch(`/products/${params.id}/add_to_cart`, {
+      method: 'POST',
+    })
+    if (!response.ok) {
+      throw new Error("Failed to add to cart")
+    }
     return await response.json()
   }
 }

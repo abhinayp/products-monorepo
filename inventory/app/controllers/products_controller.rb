@@ -23,7 +23,7 @@ class ProductsController < ApplicationController
       return
     end
 
-    item = CartClient::ItemsClient.create({
+    item = CartClient::ItemsClient.new.create({
       user_id: current_user['id'],
       product_id: params[:id],
       count: 1,

@@ -17,6 +17,8 @@ interface GlobalContextType {
   currentUserLoading: boolean
   isAuthenticated: boolean
   refetchCurrentUser: () => void
+  showCart: boolean
+  setShowCart: (showCart: boolean) => void
 }
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined)
@@ -46,11 +48,15 @@ export function GlobalProvider({ children }: GlobalProviderProps) {
     return user
   }, [user])
 
+  const [showCart, setShowCart] = useState(false)
+
   const value = {
     currentUser,
     currentUserLoading: isLoading,
     isAuthenticated: !!currentUser,
     refetchCurrentUser,
+    showCart,
+    setShowCart,
   }
 
   return (
