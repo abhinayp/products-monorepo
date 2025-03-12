@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { itemsClient } from '@/api-client/cart/items.client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { formatToDollars } from '@/helpers/common.helper'
-
+import { toast } from 'sonner'
 interface ItemProps {
   item: CartItemDTO
 }
@@ -20,12 +20,22 @@ const Item = ({ item }: ItemProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] })
     },
+    onError: (error: Error) => {
+      toast.error(error.message, {
+        description: "Please try again later",
+      })
+    },
   })
 
   const removeCartItem = useMutation({
     mutationFn: (itemId: number) => itemsClient.removeFromCart({ id: itemId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] })
+    },
+    onError: (error: Error) => {
+      toast.error(error.message, {
+        description: "Please try again later",
+      })
     },
   })
 

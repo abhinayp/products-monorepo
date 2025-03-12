@@ -9,7 +9,7 @@ import Link from "next/link"
 import { useGlobal } from "@/app/GlobalContext"
 import { useMutation } from "@tanstack/react-query"
 import { productsClient } from "@/api-client/inventory/products.client"
-
+import { toast } from "sonner"
 interface Props {
   id: number
   title: string
@@ -29,6 +29,11 @@ const Product = (product: Props) => {
     mutationFn: () => productsClient.addToCart({ id: product.id }),
     onSuccess: () => {
       setShowCart(true)
+    },
+    onError: (error: Error) => {
+      toast.error(error.message, {
+        description: "Please try again later",
+      })
     },
   })
 

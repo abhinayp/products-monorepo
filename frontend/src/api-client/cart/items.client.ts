@@ -14,6 +14,9 @@ export class ItemsClient extends CartClient {
 
   async getCart() {
     const response = await this.fetch<GetCartDTO['response']>('/')
+    if (!response.ok) {
+      throw new Error("Failed to get cart")
+    }
     return await response.json()
   }
 
@@ -22,13 +25,20 @@ export class ItemsClient extends CartClient {
       method: 'PATCH',
       body: JSON.stringify(body),
     })
+    if (!response.ok) {
+      throw new Error("Failed to update cart item")
+    }
     return await response.json()
   }
 
   async removeFromCart(params: RemoveFromCartDTO['request']['params']) {
-    await this.fetch<void>(`/items/${params.id}`, {
+    const response = await this.fetch<void>(`/items/${params.id}`, {
       method: 'DELETE',
     })
+    if (!response.ok) {
+      throw new Error("Failed to remove from cart")
+    }
+    return await response.json()
   }
 }
 
