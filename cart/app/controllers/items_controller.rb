@@ -44,13 +44,12 @@ class ItemsController < ApplicationController
   end
 
   def destroy
-    missing_params = %i[product_id].select { |param| item_params[param].nil? }
     if !params[:id]
       render json: { error: "Missing parameters: id" }, status: :bad_request
       return
     end
 
-    data = CartItem.remove_product(params[:id])
+    data = CartItem.remove_item(params[:id])
     if data
       cart = data[:cart]
       CartProducer.update_metrics(product_id: cart.product_id, new_item_count: -1 * @item.count)

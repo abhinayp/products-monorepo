@@ -24,23 +24,15 @@ export interface GetCartDTO {
   }
 }
 
-export interface AddToCartDTO {
-  request: {
-    body: {
-      product_id: number
-      quantity: number
-    }
-  }
-  response: CartItemDTO
-}
-
 export interface UpdateCartItemDTO {
   request: {
     params: {
       id: number
     }
     body: {
-      quantity: number
+      item: {
+        count: number
+      }
     }
   }
   response: CartItemDTO

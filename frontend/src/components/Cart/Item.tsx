@@ -14,8 +14,8 @@ interface ItemProps {
 const Item = ({ item }: ItemProps) => {
   const queryClient = useQueryClient()
   const updateCartItem = useMutation({
-    mutationFn: ({ itemId, quantity }: { itemId: number; quantity: number }) =>
-      itemsClient.updateCartItem({ id: itemId }, { quantity }),
+    mutationFn: ({ itemId, count }: { itemId: number; count: number }) =>
+      itemsClient.updateCartItem({ id: itemId }, { item: { count } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] })
     },
@@ -35,7 +35,7 @@ const Item = ({ item }: ItemProps) => {
     if (newQuantity < 1) {
       removeCartItem.mutate(item.id)
     } else {
-      updateCartItem.mutate({ itemId: item.id, quantity: newQuantity })
+      updateCartItem.mutate({ itemId: item.id, count: newQuantity })
     }
   }
 
