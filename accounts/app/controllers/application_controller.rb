@@ -2,7 +2,7 @@ class ApplicationController < ActionController::API
   include ActionController::Cookies
 
   def authenticate_server!
-    code = "password"
+    code = "Bearer password"
     authorization_header = request.headers['Authorization']
     head :unauthorized unless authorization_header == code
   end

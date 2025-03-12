@@ -1,4 +1,7 @@
 class ProductsController < ApplicationController
+  before_action :authenticate_user!, only: [:add_to_cart]
+  before_action :authenticate_server!, only: [:get_all_products]
+
   def index
     page = params[:page] || 1
     products = Product.includes(:product_inventory)
@@ -10,6 +13,29 @@ class ProductsController < ApplicationController
     product = Product.includes(:product_inventory).find(params[:id])
     product_with_inventory = product.as_json.merge(get_inventory(product))
     render json: product_with_inventory
+  end
+
+  def add_to_cart
+    product = Product.find(params[:id])
+
+    if product.blank?
+      render json: { error: 'Product not found' }, status: :not_found
+      return
+    end
+
+    item = CartClient::ItemsClient.create({
+      user_id: current_user['id'],
+      product_id: params[:id],
+      count: 1,
+      unit_price: product.price
+    })
+    render json: item[:cart]
+  end
+
+  def get_all_products
+    product_ids = params[:ids]
+    products = Product.where(id: product_ids)
+    render json: products
   end
 
   private

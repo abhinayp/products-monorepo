@@ -1,4 +1,4 @@
-import { GetProductsDTO } from "./dto/product.dto"
+import { AddToCartDTO, GetProductsDTO } from "./dto/product.dto"
 import { InventoryClient } from "./inventory.base"
 
 export class ProductsClient extends InventoryClient {
@@ -14,6 +14,11 @@ export class ProductsClient extends InventoryClient {
 
   async getProducts() {
     const response = await this.fetch<GetProductsDTO['response']>("/products")
+    return await response.json()
+  }
+
+  async addToCart(params: AddToCartDTO['request']['params']) {
+    const response = await this.fetch(`/products/${params.id}/add-to-cart`)
     return await response.json()
   }
 }

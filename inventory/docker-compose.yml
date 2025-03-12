@@ -29,8 +29,9 @@ services:
       DATABASE_DB: inventory
       DATABASE_PORT: 5432
       PORT: 4001
-      APPLICATION_HOST: inventory-server:4001
+      APPLICATION_HOST: inventory-server:4001,api-gateway
       CORS_ORIGINS: "http://localhost:3000"
+      API_GATEWAY_HOST: http://api-gateway
     ports:
       - "4001:4001"
     depends_on:
@@ -52,8 +53,9 @@ services:
       DATABASE_DB: inventory
       DATABASE_PORT: 5432
       PORT: 4001
-      APPLICATION_HOST: inventory-server:4001
+      APPLICATION_HOST: inventory-server:4001,api-gateway
       CORS_ORIGINS: "http://localhost:3000"
+      API_GATEWAY_HOST: http://api-gateway
     depends_on:
       - postgres
     container_name: inventory-consumer-group

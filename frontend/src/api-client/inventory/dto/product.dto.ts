@@ -11,3 +11,11 @@ export interface GetProductsDTO {
     sold_count: number
   }[]
 }
+
+export interface AddToCartDTO {
+  request: {
+    params: {
+      id: number
+    }
+  }
+}

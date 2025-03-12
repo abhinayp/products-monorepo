@@ -1,9 +1,11 @@
 import React from 'react'
-import { GalleryVerticalEnd, Bell, Search } from 'lucide-react'
+import { GalleryVerticalEnd, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import CTA from './CTA'
+import { Cart } from '@/components/Cart/Cart'
+
 export function Header() {
   return (
     <div className="border-b">
@@ -42,16 +44,7 @@ export function Header() {
 
         {/* Right side actions */}
         <div className="ml-auto flex items-center gap-2">
-          {/* <Button
-            variant="ghost"
-            size="icon"
-            className="relative"
-            aria-label="Notifications"
-          >
-            <Bell className="h-4 w-4" />
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-primary" />
-          </Button> */}
-
+          <Cart />
           <CTA />
         </div>
       </div>
