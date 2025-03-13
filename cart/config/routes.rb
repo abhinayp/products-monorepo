@@ -10,5 +10,9 @@ Rails.application.routes.draw do
 
   get "/", to: "home#index"
 
-  resources :items, only: [:create, :update, :destroy]
+  resources :items, only: [:create, :update, :destroy] do
+    collection do
+      get :get_products_cart_items
+    end
+  end
 end

@@ -67,7 +67,7 @@ const Item = ({ item }: ItemProps) => {
       </div>
       <div className="flex flex-1 flex-col">
         <div className="flex justify-between">
-          <div className="font-medium">{item.product?.title}</div>
+          <div className="font-medium mr-2">{item.product?.title}</div>
           <div className="font-medium">{formatToDollars(totalPrice)}</div>
         </div>
         <div className="flex items-center gap-2 mt-2">
@@ -91,7 +91,7 @@ const Item = ({ item }: ItemProps) => {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 ml-auto"
+            className="h-8 w-8 ml-auto text-destructive"
             onClick={() => removeCartItem.mutate(item.id)}
             disabled={removeCartItem.isPending}
           >

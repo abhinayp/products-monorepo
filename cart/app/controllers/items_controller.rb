@@ -1,5 +1,5 @@
 class ItemsController < ApplicationController
-  before_action :authenticate_server!, only: [:create]
+  before_action :authenticate_server!, only: [:create, :get_products_cart_items]
   before_action :authenticate_user!, only: [:update, :destroy]
   before_action :has_item_access_to_user, only: [:update, :destroy]
 
@@ -18,6 +18,22 @@ class ItemsController < ApplicationController
     else
       render json: { errors: "creation failed" }, status: :unprocessable_entity
     end
+  end
+
+  def get_products_cart_items
+    if !params[:user_id]
+      render json: { error: "Missing parameters: user_id" }, status: :bad_request
+      return
+    end
+
+    if !params[:product_ids]
+      render json: { error: "Missing parameters: product_ids" }, status: :bad_request
+      return
+    end
+
+    products = params[:product_ids].split(',')
+    cart_items = CartItem.where(user_id: params[:user_id], product_id: products)
+    render json: cart_items, status: :ok
   end
 
   def update

@@ -9,6 +9,8 @@ export interface GetProductsDTO {
     available_count: number
     hold_count: number
     sold_count: number
+    cart_users_count?: number
+    your_cart_count?: number
   }[]
 }
 

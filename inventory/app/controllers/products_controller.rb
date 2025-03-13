@@ -4,15 +4,14 @@ class ProductsController < ApplicationController
 
   def index
     page = params[:page] || 1
-    products = Product.includes(:product_inventory)
-    products_with_inventory = products.map { |product| product.as_json.merge(get_inventory(product)) }
-    render json: products_with_inventory
+    user_id = current_user['id'] if current_user.present?
+    products_data = ProductsModule::ProductsHelper.get_products_data(user_id: user_id)
+    render json: products_data
   end
 
   def show
-    product = Product.includes(:product_inventory).find(params[:id])
-    product_with_inventory = product.as_json.merge(get_inventory(product))
-    render json: product_with_inventory
+    data = ProductsModule::ProductsHelper.get_product_data(params[:id])
+    render json: data
   end
 
   def add_to_cart
@@ -36,14 +35,5 @@ class ProductsController < ApplicationController
     product_ids = params[:ids].split(',')
     products = Product.where(id: product_ids)
     render json: products
-  end
-
-  private
-  def get_inventory(product)
-    {
-      available_count: product.product_inventory.available_count,
-      hold_count: product.product_inventory.hold_count,
-      sold_count: product.product_inventory.sold_count
-    }
   end
 end

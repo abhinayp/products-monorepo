@@ -31,6 +31,7 @@ module Inventory
     config.middleware.use ActionDispatch::Cookies
     config.autoload_paths << Rails.root.join('app/stores')
     config.autoload_paths << Rails.root.join('app/clients')
+    config.autoload_paths << Rails.root.join('app/modules')
 
     if ENV["APPLICATION_HOST"]
       config.hosts = config.hosts + ENV["APPLICATION_HOST"].split(',')

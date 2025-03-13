@@ -1,3 +1,3 @@
-class ProductCart < ActiveRecord::Base
+class ProductCart < ApplicationRecord
   belongs_to :product
 end
