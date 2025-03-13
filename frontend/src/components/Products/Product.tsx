@@ -54,7 +54,7 @@ const Product = (product: Props) => {
             <div className="absolute top-2 right-2">
               <Badge variant="secondary" className="gap-1.5">
                 <Users className="h-3 w-3" />
-                {product.cart_users_count} in cart
+                {product.cart_users_count} {product.cart_users_count > 1 ? "others" : "other"} added to cart
               </Badge>
             </div>
           )}
