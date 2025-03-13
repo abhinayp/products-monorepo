@@ -5,7 +5,7 @@ class HomeController < ApplicationController
     page = params[:page] || 1
     page = page.to_i
     offset = (page - 1) * 10
-    cart = CartItem.limit(20).offset(offset).where(user_id: current_user['id'])
+    cart = CartItem.limit(20).offset(offset).where(user_id: current_user['id']).order(id: :desc)
     cart_metadata = CartMetadata.find_by(user_id: current_user['id'])
 
     cart_items_with_products = []

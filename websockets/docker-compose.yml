@@ -20,3 +20,24 @@ services:
       - PORT=5001
     ports:
       - "5001:5001"
+  consumer:
+    container_name: websockets-consumer
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+      args:
+        - GID=${GID:-1000}
+        - UID=${UID:-1000}
+        - USER=${USER:-websockets}
+    entrypoint: ["npm"]
+    command: ["run", "start:consumer:dev"]
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=development
+
+networks:
+  default:
+    external:
+      name: products
