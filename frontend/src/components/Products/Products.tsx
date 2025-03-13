@@ -1,15 +1,34 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { productsClient } from '@/api-client/inventory/products.client'
 import { useQuery } from '@tanstack/react-query'
 import Product from './Product'
+import useWebsockets from '@/hooks/useWebsockets'
 
 const Products = () => {
-  const { data: products, isLoading } = useQuery({
+  const { data: products, isLoading, refetch } = useQuery({
     queryKey: ['products'],
     queryFn: () => productsClient.getProducts(),
   })
+
+  const productIds = products?.map((product) => product.id)
+
+  const { socket } = useWebsockets({
+    path: "/products",
+    managerOptions: {
+      query: {
+        rooms: productIds || []
+      }
+    }
+  })
+
+  useEffect(() => {
+    socket?.current?.on("update_metrics", () => {
+      console.log("refetching products...");
+      refetch()
+    })
+  }, [socket])
 
   if (isLoading) {
     return (

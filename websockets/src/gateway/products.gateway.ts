@@ -14,20 +14,20 @@ import { Server, Socket } from 'socket.io';
   },
   namespace: 'products',
 })
-export class ProductssGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  private readonly logger = new Logger(ProductssGateway.name);
+export class ProductsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  private readonly logger = new Logger(ProductsGateway.name);
   @WebSocketServer()
-  server: Server;
+  public readonly server: Server;
 
   handleConnection(@ConnectedSocket() client: Socket) {
-    const { rooms } = client.handshake.query as { rooms: string[] }
+    const { rooms } = client.handshake.query as { rooms: string }
 
     if (!rooms) {
       return
     }
 
-    client.data.rooms = rooms
-    rooms.forEach(room => client.join(room))
+    client.data.rooms = rooms.split(',')
+    client.data.rooms.forEach(room => client.join(room))
     this.logger.log(`Client connected: ${client.id} to rooms: ${rooms}`);
   }
 
