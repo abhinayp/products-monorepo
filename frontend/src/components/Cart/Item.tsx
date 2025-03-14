@@ -19,6 +19,7 @@ const Item = ({ item }: ItemProps) => {
       itemsClient.updateCartItem({ id: itemId }, { item: { count } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] })
+      queryClient.invalidateQueries({ queryKey: ['products'] })
     },
     onError: (error: Error) => {
       toast.error(error.message, {

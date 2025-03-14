@@ -7,7 +7,7 @@ import { ChevronDown, Heart, ShoppingCart, Users } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useGlobal } from "@/app/GlobalContext"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { productsClient } from "@/api-client/inventory/products.client"
 import { toast } from "sonner"
 interface Props {
@@ -26,11 +26,12 @@ interface Props {
 
 const Product = (product: Props) => {
   const { setShowCart } = useGlobal()
-
+  const queryClient = useQueryClient()
   const { mutate: addToCart, isPending } = useMutation({
     mutationFn: () => productsClient.addToCart({ id: product.id }),
     onSuccess: () => {
       setShowCart(true)
+      queryClient.invalidateQueries({ queryKey: ['products'] })
     },
     onError: (error: Error) => {
       toast.error(error.message, {
