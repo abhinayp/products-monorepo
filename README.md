@@ -64,3 +64,7 @@ To have real time updates for an open tab, eebsockets service listens to same to
 ## Coming Soon
 
 Orders, Payments, Notifications are coming soon
+
+##
+![Flowchart](./flowchart.png)
+
