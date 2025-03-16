@@ -6,18 +6,9 @@ import Image from "next/image"
 import LoginPoster from "../../../../public/login_poster.jpg"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Container } from "@/components/ui/container"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
-import { useGlobal } from "../../GlobalContext"
-export default function LoginPage() {
-  const router = useRouter()
-  const { currentUser, currentUserLoading } = useGlobal()
-
-  useEffect(() => {
-    if (currentUser) {
-      router.push('/')
-    }
-  }, [currentUser])
+import useLoginPage from "./useLoginPage"
+export default function Page() {
+  const { currentUser, currentUserLoading } = useLoginPage()
 
   if (currentUserLoading || currentUser) {
     return (
