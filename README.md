@@ -50,7 +50,13 @@ Websockets - http://localhost:5001 or `ws://localhost:5001`
 
 Frontend makes api calls to inventory service to load all products on home page and to cart service to get what items are in the cart.
 
-Inventory service wants to know how many users added a products in to cart for all the products it returns. So that frontend displays a badge like "2 others added to cart" for a product.
+### Requirement
+Frontend should display a badge like "2 others added to cart" for each product.
+<img src="./product_badge1.png" width="200" alt="Product Badge">
+
+Inventory service needs to know how many users added a products in to cart for all the products it returns.
+
+### Implementation
 
 Cart service produces an event called `update_metrics` to a topic `cart` that will provide user count everytime someone adds, remove or update an item in cart.
 
@@ -58,7 +64,7 @@ Inventory service listens to topic `cart` and to the event(`update_metrics`) and
 
 But user has to refresh the page to see the updated count of "users added to cart".
 
-To have real time updates for an open tab, eebsockets service listens to same topic `cart` and to event `update_metrics` and publishes event with user count to browser that has that product displaying.
+To have real time updates for an open tab, websockets service listens to same topic `cart` and to event `update_metrics` and publishes event with user count to browser that has that product displaying.
 
 
 ## Coming Soon
