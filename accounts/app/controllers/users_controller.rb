@@ -6,7 +6,7 @@ class UsersController < ApplicationController
     missing_params = required_params.select { |param| user_params[param].blank? }
 
     if missing_params.any?
-      render json: { error: "Missing required parameters: #{missing_params.join(', ')}" }, status: :bad_request
+      render json: { error: "Missing required fields: #{missing_params.join(', ')}" }, status: :bad_request
       return
     end
 

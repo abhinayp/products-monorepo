@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import useLoginForm from "./useLoginForm"
+import { Loader2 } from "lucide-react"
 export function LoginForm({
   className,
   ...props
@@ -39,7 +40,7 @@ export function LoginForm({
           <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} disabled={disabled} onKeyDown={onKeyDown} />
         </div>
         <Button type="button" className="w-full" onClick={handleSubmit} disabled={disabled}>
-          {isPending || isSuccess ? "Logging in..." : "Login"}
+          {isPending || isSuccess ? (<><Loader2 className="size-4 animate-spin" /> Logging in...</>) : "Login"}
         </Button>
         <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
           <span className="bg-background text-muted-foreground relative z-10 px-2">
@@ -49,9 +50,9 @@ export function LoginForm({
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
-        <Link href="/signup" className="underline underline-offset-4">
+        <a href="/signup" className="underline underline-offset-4">
           Sign up
-        </Link>
+        </a>
       </div>
     </div>
   )
