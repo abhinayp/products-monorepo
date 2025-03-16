@@ -1,31 +1,15 @@
 "use client"
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { ShoppingCart } from 'lucide-react'
-import { useQuery } from '@tanstack/react-query'
-import { itemsClient } from '@/api-client/cart/items.client'
-import Item from './Item'
+import { Item } from './Item'
 import { formatToDollars } from '@/helpers/common.helper'
-import { useGlobal } from '@/app/GlobalContext'
+import useCart from './useCart'
 
-export function Cart() {
-  const { showCart, setShowCart } = useGlobal()
-
-  const { data: cartData, isLoading, refetch } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => itemsClient.getCart(),
-  })
-
-
-  const cartTotal = Number(cartData?.cart_metadata?.net_total_price) || 0
-
-  useEffect(() => {
-    if (showCart) {
-      refetch()
-    }
-  }, [showCart])
+function Cart() {
+  const { showCart, cartData, isLoading, cartTotal, setShowCart } = useCart()
 
   return (
     <Sheet open={showCart} onOpenChange={setShowCart}>
@@ -91,3 +75,5 @@ export function Cart() {
     </Sheet>
   )
 }
+
+export default Cart

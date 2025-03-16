@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import CTA from './CTA'
-import { Cart } from '@/components/Cart/Cart'
+import { Cart } from '@/components/Cart'
 
 export function Header() {
   return (

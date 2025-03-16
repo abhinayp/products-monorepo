@@ -1,49 +1,11 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
-import { productsClient } from '@/api-client/inventory/products.client'
-import { useQuery } from '@tanstack/react-query'
-import Product from './Product'
-import useWebsockets from '@/hooks/useWebsockets'
-import { GetProductsDTO } from '@/api-client/inventory/dto/product.dto'
-import { getProductsFromProductMetrics } from './products.helper'
+import React from 'react'
+import { Product } from './Product'
+import useProducts from './useProducts'
+
 const Products = () => {
-  const [products, setProducts] = useState<GetProductsDTO['response']>([])
-  const { data: productsData, isLoading } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => productsClient.getProducts(),
-  })
-
-  useEffect(() => {
-    setProducts(productsData || [])
-  }, [productsData])
-
-  const productIds = products?.map((product) => product.id)
-
-  const { socket } = useWebsockets({
-    path: "/products",
-    managerOptions: {
-      query: {
-        rooms: productIds || []
-      }
-    }
-  })
-
-  useEffect(() => {
-    if (!productsData) return
-    socket?.current?.on("update_metrics", ({ product_id, user_count }: {
-      product_id: number,
-      user_count: number
-    }) => {
-      console.log("updating products...");
-      const newProducts = getProductsFromProductMetrics(productsData, { product_id, user_count })
-      setProducts(() => [...newProducts])
-    })
-
-    return () => {
-      socket?.current?.off("update_metrics")
-    }
-  }, [socket, productsData, products])
+  const { products, isLoading } = useProducts()
 
   if (isLoading) {
     return (

@@ -1,60 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Minus, Plus, Trash2 } from 'lucide-react'
 import { CartItemDTO } from '@/api-client/cart/dto/cart.dto'
 import Image from 'next/image'
-import { itemsClient } from '@/api-client/cart/items.client'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { formatToDollars } from '@/helpers/common.helper'
-import { toast } from 'sonner'
+import useItem from './useItem'
 interface ItemProps {
   item: CartItemDTO
 }
 
 const Item = ({ item }: ItemProps) => {
-  const [count, setCount] = useState(item.count)
-  const queryClient = useQueryClient()
-  const updateCartItem = useMutation({
-    mutationFn: ({ itemId, count }: { itemId: number; count: number }) =>
-      itemsClient.updateCartItem({ id: itemId }, { item: { count } }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cart'] })
-      queryClient.invalidateQueries({ queryKey: ['products'] })
-    },
-    onError: (error: Error) => {
-      toast.error(error.message, {
-        description: "Please try again later",
-      })
-    },
-  })
-
-  const removeCartItem = useMutation({
-    mutationFn: (itemId: number) => itemsClient.removeFromCart({ id: itemId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cart'] })
-    },
-    onError: (error: Error) => {
-      toast.error(error.message, {
-        description: "Please try again later",
-      })
-    },
-  })
-
-  useEffect(() => {
-    setCount(item.count)
-  }, [item.count])
-
-  const totalPrice = Number(item.unit_price || 0) * Number(item.count || 0)
-
-  const handleQuantityChange = (item: CartItemDTO, change: number) => {
-    const newQuantity = item.count + change
-    setCount(newQuantity)
-    if (newQuantity < 1) {
-      removeCartItem.mutate(item.id)
-    } else {
-      updateCartItem.mutate({ itemId: item.id, count: newQuantity })
-    }
-  }
+  const { count, totalPrice, handleQuantityChange, removeCartItem } = useItem({ item })
 
   return (
     <div key={item.id} className="flex gap-4 p-4 border-b">

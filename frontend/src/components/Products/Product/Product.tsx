@@ -1,15 +1,13 @@
 "use client"
 
-import { Card, CardContent, CardFooter } from "../ui/card"
-import { Badge } from "../ui/badge"
-import { Button } from "../ui/button"
+import { Card, CardContent, CardFooter } from "../../ui/card"
+import { Badge } from "../../ui/badge"
+import { Button } from "../../ui/button"
 import { ChevronDown, Heart, ShoppingCart, Users } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useGlobal } from "@/app/GlobalContext"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { productsClient } from "@/api-client/inventory/products.client"
-import { toast } from "sonner"
+import useProduct from "./useProduct"
+
 interface Props {
   id: number
   title: string
@@ -25,20 +23,7 @@ interface Props {
 }
 
 const Product = (product: Props) => {
-  const { setShowCart } = useGlobal()
-  const queryClient = useQueryClient()
-  const { mutate: addToCart, isPending } = useMutation({
-    mutationFn: () => productsClient.addToCart({ id: product.id }),
-    onSuccess: () => {
-      setShowCart(true)
-      queryClient.invalidateQueries({ queryKey: ['products'] })
-    },
-    onError: (error: Error) => {
-      toast.error(error.message, {
-        description: "Please try again later",
-      })
-    },
-  })
+  const { addToCart, isPending } = useProduct({ productId: product.id })
 
   return (
     <Card key={product.id} className="overflow-hidden group p-0">
