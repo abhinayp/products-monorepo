@@ -36,7 +36,7 @@ Websockets - http://localhost:5001 or `ws://localhost:5001`
 
 **Accounts Service** - A service that stores user and their authentication info
 
-**Inventory Service** - A service that keeps all product inventory and keep track of it's availability, pricing and categorizing them
+**Inventory Service** - A service that keeps all product inventory and keep track of it's availability, pricing and categorizing them. Data seeded on creation using https://fakestoreapi.com/docs#tag/Products/operation/getAllProducts
 
 **Cart Service** - A service that handles user cart like what items are in it, adding, deleting. Metrics like tax, subtotal, total.
 

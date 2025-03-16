@@ -1,6 +1,6 @@
 .PHONY: up down migrate build reload restart install clean logs shell clear-cache seed
 
-up: build install migrate
+up: build install migrate seed
 	docker compose up -d
 
 down:
