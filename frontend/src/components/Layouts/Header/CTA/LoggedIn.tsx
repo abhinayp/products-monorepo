@@ -22,13 +22,13 @@ const LoggedIn = () => {
         <AvatarFallback>{initials}</AvatarFallback>
       </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent className="mr-5">
         <DropdownMenuLabel>{currentUser.firstname} {currentUser.lastname}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {/* <DropdownMenuItem>Profile</DropdownMenuItem>
         <DropdownMenuItem>Billing</DropdownMenuItem>
         <DropdownMenuItem>Team</DropdownMenuItem> */}
-        <DropdownMenuItem onClick={() => { location.href = '/logout' }}>Logout</DropdownMenuItem>
+        <DropdownMenuItem className="text-destructive cursor-pointer" onClick={() => { location.href = '/logout' }}>Logout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
