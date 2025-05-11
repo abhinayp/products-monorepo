@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
-import OrdersList from "@/components/orders-list"
-import OrdersFilter from "@/components/orders-filter"
+import OrdersList from "@/components/Orders/orders-list"
+import OrdersFilter from "@/components/Orders/orders-filter"
 
 export const metadata: Metadata = {
   title: "My Orders | E-commerce Store",

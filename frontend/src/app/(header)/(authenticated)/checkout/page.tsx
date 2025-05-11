@@ -1,4 +1,4 @@
-import OrderSummary from "@/components/order-summary"
+import { OrderSummary } from "@/components/Orders"
 import PaymentForm from "@/components/payment-form"
 
 export default function CheckoutPage() {

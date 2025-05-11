@@ -55,7 +55,7 @@ function Cart() {
             <div className="border-t p-4">
               <div className="flex justify-between text-sm py-1">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span className="text-muted-foreground">{formatToDollars(cartData?.cart_metadata?.net_total_price || 0)}</span>
+                <span className="text-muted-foreground">{formatToDollars(cartData?.cart_metadata?.gross_total_price || 0)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Tax</span>
