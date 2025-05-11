@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Check, CreditCard, Loader2 } from "lucide-react"
+import { Check, CreditCard, Loader2, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -13,10 +13,37 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ShippingForm from "@/components/shipping-form"
+import SavedPaymentMethods from "@/components/saved-payment-methods"
+
+// Mock saved payment methods
+const savedPaymentMethods = [
+  {
+    id: "pm_1",
+    cardBrand: "visa",
+    last4: "4242",
+    expiryMonth: "12",
+    expiryYear: "2026",
+    cardholderName: "John Doe",
+    isDefault: true,
+  },
+  {
+    id: "pm_2",
+    cardBrand: "mastercard",
+    last4: "5555",
+    expiryMonth: "08",
+    expiryYear: "2025",
+    cardholderName: "John Doe",
+    isDefault: false,
+  },
+]
 
 export default function PaymentForm() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string | null>(
+    savedPaymentMethods.find((pm) => pm.isDefault)?.id || null,
+  )
+  const [showNewCardForm, setShowNewCardForm] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -47,33 +74,67 @@ export default function PaymentForm() {
               </TabsList>
 
               <TabsContent value="card" className="space-y-4 pt-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="col-span-2">
-                    <Label htmlFor="cardNumber">Card Number</Label>
-                    <Input id="cardNumber" placeholder="1234 5678 9012 3456" />
-                  </div>
-                  <div>
-                    <Label htmlFor="expiryDate">Expiry Date</Label>
-                    <Input id="expiryDate" placeholder="MM/YY" />
-                  </div>
-                  <div>
-                    <Label htmlFor="cvc">CVC</Label>
-                    <Input id="cvc" placeholder="123" />
-                  </div>
-                  <div className="col-span-2">
-                    <Label htmlFor="nameOnCard">Name on Card</Label>
-                    <Input id="nameOnCard" placeholder="John Doe" />
-                  </div>
-                </div>
+                {savedPaymentMethods.length > 0 && !showNewCardForm && (
+                  <div className="space-y-4">
+                    <SavedPaymentMethods
+                      paymentMethods={savedPaymentMethods}
+                      selectedPaymentMethod={selectedPaymentMethod}
+                      onSelectPaymentMethod={setSelectedPaymentMethod}
+                    />
 
-                <div className="flex items-center space-x-2">
-                  <RadioGroup defaultValue="save" className="flex">
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="save" id="save" />
-                      <Label htmlFor="save">Save card for future purchases</Label>
+                    <div className="flex justify-between items-center">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setShowNewCardForm(true)}
+                        className="flex items-center"
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Add New Card
+                      </Button>
                     </div>
-                  </RadioGroup>
-                </div>
+
+                    <Separator />
+                  </div>
+                )}
+
+                {(showNewCardForm || savedPaymentMethods.length === 0) && (
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="col-span-2">
+                        <Label htmlFor="cardNumber">Card Number</Label>
+                        <Input id="cardNumber" placeholder="1234 5678 9012 3456" />
+                      </div>
+                      <div>
+                        <Label htmlFor="expiryDate">Expiry Date</Label>
+                        <Input id="expiryDate" placeholder="MM/YY" />
+                      </div>
+                      <div>
+                        <Label htmlFor="cvc">CVC</Label>
+                        <Input id="cvc" placeholder="123" />
+                      </div>
+                      <div className="col-span-2">
+                        <Label htmlFor="nameOnCard">Name on Card</Label>
+                        <Input id="nameOnCard" placeholder="John Doe" />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <RadioGroup defaultValue="save" className="flex">
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="save" id="save" />
+                          <Label htmlFor="save">Save card for future purchases</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+
+                    {savedPaymentMethods.length > 0 && (
+                      <Button type="button" variant="ghost" onClick={() => setShowNewCardForm(false)} className="mt-2">
+                        Cancel
+                      </Button>
+                    )}
+                  </>
+                )}
               </TabsContent>
 
               <TabsContent value="paypal" className="pt-4">
