@@ -9,7 +9,7 @@ import { formatToDollars } from '@/helpers/common.helper'
 import useCart from './useCart'
 
 function Cart() {
-  const { showCart, cartData, isLoading, cartTotal, setShowCart } = useCart()
+  const { showCart, cartData, isLoading, cartTotal, setShowCart, checkoutClicked, handleCheckoutClick } = useCart()
 
   return (
     <Sheet open={showCart} onOpenChange={setShowCart}>
@@ -66,7 +66,9 @@ function Cart() {
                 <span className="font-medium">{formatToDollars(cartTotal)}</span>
               </div>
               <div className="pt-2">
-                <Button className="w-full">Checkout</Button>
+                <Button className="w-full" onClick={handleCheckoutClick} disabled={checkoutClicked}>
+                  {checkoutClicked ? 'Redirecting...' : 'Checkout'}
+                </Button>
               </div>
             </div>
           </div>
