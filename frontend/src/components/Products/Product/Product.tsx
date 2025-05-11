@@ -87,11 +87,11 @@ const Product = (product: Props) => {
 const ProductSkeleton = () => {
   return (
     <Card className="group overflow-hidden p-0">
-        <div className="h-63 w-full bg-gray-200 animate-pulse rounded-lg"></div>
+      <div className="h-63 w-full bg-gray-200 animate-pulse rounded-lg"></div>
       <CardContent className="p-4 pt-0">
-          <div className="h-4 w-32 bg-gray-200 animate-pulse rounded"></div>
-          <div className="h-4 w-24 bg-gray-200 animate-pulse rounded mt-2"></div>
-          <div className="h-4 w-24 bg-gray-200 animate-pulse rounded mt-2"></div>
+        <div className="h-4 w-32 bg-gray-200 animate-pulse rounded"></div>
+        <div className="h-4 w-24 bg-gray-200 animate-pulse rounded mt-2"></div>
+        <div className="h-4 w-24 bg-gray-200 animate-pulse rounded mt-2"></div>
       </CardContent>
       <CardFooter className="flex justify-between items-center p-4 pt-0">
         <div>
