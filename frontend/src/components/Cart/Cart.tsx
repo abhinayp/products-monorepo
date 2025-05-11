@@ -4,7 +4,7 @@ import React from 'react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { ShoppingCart } from 'lucide-react'
-import { Item } from './Item'
+import { Item } from '../Item'
 import { formatToDollars } from '@/helpers/common.helper'
 import useCart from './useCart'
 
