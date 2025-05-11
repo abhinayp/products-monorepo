@@ -4,12 +4,12 @@ class CreateOrderTables < ActiveRecord::Migration[8.0]
       t.decimal :total_price, precision: 10, scale: 2
       t.decimal :tax, precision: 10, scale: 2
       t.decimal :gross_total_price, precision: 10, scale: 2
-      t.integer :account_id
+      t.integer :user_id
       t.string :status
       t.timestamps
     end
 
-    add_index :orders, :account_id
+    add_index :orders, :user_id
     add_index :orders, :status
 
     add_index :orders, :created_at

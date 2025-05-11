@@ -90,14 +90,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_195620) do
     t.decimal "total_price", precision: 10, scale: 2
     t.decimal "tax", precision: 10, scale: 2
     t.decimal "gross_total_price", precision: 10, scale: 2
-    t.integer "account_id"
+    t.integer "user_id"
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_orders_on_account_id"
     t.index ["created_at"], name: "index_orders_on_created_at"
     t.index ["status"], name: "index_orders_on_status"
     t.index ["updated_at"], name: "index_orders_on_updated_at"
+    t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
   add_foreign_key "order_contacts", "orders"
