@@ -53,6 +53,13 @@ function OrderStatusBadge({ status }: { status: string }) {
           Cancelled
         </Badge>
       )
+    case "payment_failed":
+      return (
+        <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+          <AlertCircle className="h-3.5 w-3.5 mr-1" />
+          Payment Failed
+        </Badge>
+      )
     default:
       return <Badge variant="outline">{status}</Badge>
   }
