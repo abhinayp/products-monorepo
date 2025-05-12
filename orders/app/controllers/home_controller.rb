@@ -7,6 +7,18 @@ class HomeController < ApplicationController
 
   def show
     @order = Order.find(params[:id])
+    if @order.user_id != current_user['id']
+      render json: { error: 'Unauthorized' }, status: :unauthorized
+      return
+    end
+
+    render json: {
+      order: @order,
+      order_items: @order.order_items,
+      order_shipping: @order.order_shipping,
+      order_contact: @order.order_contact,
+      order_payment: @order.order_payment
+    }
   end
 
   def create
