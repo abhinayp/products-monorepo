@@ -85,7 +85,7 @@ export default function ConfirmationPage() {
           <div className="flex justify-center mb-4">
             <CheckCircle className="h-16 w-16 text-green-500" />
           </div>
-          <CardTitle className="text-3xl">Order Confirmed!</CardTitle>
+          <CardTitle className="text-3xl">Order Submitted!</CardTitle>
           <CardDescription>Your order #{orderId} has been successfully placed</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
