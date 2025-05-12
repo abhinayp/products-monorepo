@@ -1,4 +1,4 @@
-import { CreateOrderDTO, OrdersDTO, ShowOrderDTO } from "./dto/home.dto"
+import { CreateOrderDTO, OrdersDTO, ShowOrderDTO, StatusHistoryDTO } from "./dto/home.dto"
 import { OrdersClient } from "./orders.base"
 
 export class HomeClient extends OrdersClient {
@@ -46,6 +46,16 @@ export class HomeClient extends OrdersClient {
     })
     if (!response.ok) {
       throw new Error("Failed to get cart")
+    }
+    return await response.json()
+  }
+
+  async statusHistory(params: StatusHistoryDTO['request']) {
+    const response = await this.fetch<StatusHistoryDTO['response']>(`/${params.id}/status_history`, {
+      method: 'GET',
+    })
+    if (!response.ok) {
+      throw new Error("Failed to get status history")
     }
     return await response.json()
   }

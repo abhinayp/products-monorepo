@@ -12,6 +12,7 @@ import { format } from "date-fns"
 import { useParams, useSearchParams } from "next/navigation"
 import { formatToDollars } from "@/helpers/common.helper"
 import { getCountryName, getStateName } from "@/helpers/address.helper"
+import OrderTimeline from "./OrderTimeline"
 // Mock data for a specific order
 const orderDetails = {
   id: "ORD-38492",
@@ -101,14 +102,14 @@ function OrderStatusBadge({ status }: { status: string }) {
       return (
         <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
           <Truck className="h-3.5 w-3.5 mr-1" />
-          Placed
+          Completed
         </Badge>
       )
     case "pending":
       return (
         <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
           <Clock className="h-3.5 w-3.5 mr-1" />
-          Processing
+          Pending
         </Badge>
       )
     case "cancelled":
@@ -130,7 +131,7 @@ export default function OrderDetailsPage() {
   const orderId = id?.toString().split("-")[1]
   console.log(id, orderId)
 
-  const { order, orderItems, orderShipping, orderContact, orderPayment, isLoading, error } = useOrder(orderId)
+  const { order, orderItems, orderShipping, orderContact, orderPayment, isLoading, error, statusHistory, statusHistoryLoading, statusHistoryError } = useOrder(orderId)
 
   if (isLoading) return <OrderDetailsPage.Skeleton />
   if (error) return <div>Error: {error.message}</div>
@@ -265,31 +266,7 @@ export default function OrderDetailsPage() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Order Timeline</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ol className="relative border-l border-muted">
-                {orderDetails.timeline.map((event, index) => (
-                  <li key={index} className="mb-6 ml-6 last:mb-0">
-                    <span className="absolute flex items-center justify-center w-6 h-6 bg-muted rounded-full -left-3 ring-8 ring-background">
-                      {index === orderDetails.timeline.length - 1 ? (
-                        <CheckCircle className="w-3 h-3 text-green-500" />
-                      ) : (
-                        <div className="w-2 h-2 bg-primary rounded-full"></div>
-                      )}
-                    </span>
-                    <h3 className="font-medium">{event.status}</h3>
-                    <time className="block text-xs text-muted-foreground mb-1">
-                      {event.date} at {event.time}
-                    </time>
-                    <p className="text-sm text-muted-foreground">{event.description}</p>
-                  </li>
-                ))}
-              </ol>
-            </CardContent>
-          </Card>
+          <OrderTimeline timeline={statusHistory || []} isLoading={statusHistoryLoading} />
         </div>
 
         <div className="space-y-6">

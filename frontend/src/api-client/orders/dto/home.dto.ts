@@ -109,3 +109,15 @@ export interface OrdersDTO {
     created_at: string;
   }[];
 }
+
+export interface StatusHistoryDTO {
+  request: {
+    id: number;
+  }
+  response: {
+    id: number;
+    status: string;
+    created_at: string;
+  }[];
+}
+

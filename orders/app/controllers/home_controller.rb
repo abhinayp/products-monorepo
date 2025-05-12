@@ -42,6 +42,16 @@ class HomeController < ApplicationController
     render json: order_data, status: :created
   end
 
+  def status_history
+    @order = Order.find(params[:id])
+    if @order.user_id != current_user['id']
+      render json: { error: 'Unauthorized' }, status: :unauthorized
+      return
+    end
+
+    render json: @order.order_status_history, status: :ok
+  end
+
   private
 
   def order_params

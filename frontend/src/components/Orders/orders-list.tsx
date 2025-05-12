@@ -96,14 +96,14 @@ function OrderStatusBadge({ status }: { status: string }) {
       return (
         <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
           <Truck className="h-3.5 w-3.5 mr-1" />
-          Placed
+          Completed
         </Badge>
       )
     case "pending":
       return (
         <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
           <Clock className="h-3.5 w-3.5 mr-1" />
-          Processing
+          Pending
         </Badge>
       )
     case "cancelled":
