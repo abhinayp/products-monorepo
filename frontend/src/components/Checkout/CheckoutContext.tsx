@@ -152,7 +152,7 @@ const defaultSavedPaymentMethods = [
 // Provider component
 export function CheckoutProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
-  const { mutateAsync: createOrder, isPending: isSubmitting, isSuccess } = useMutation({
+  const { mutateAsync: createOrder, isSuccess } = useMutation({
     mutationFn: (body: CreateOrderDTO['request']) => homeClient.create(body),
   })
 
@@ -168,6 +168,8 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   }, [isSuccess, router])
 
   const checkoutNotAvailable = cartData?.cart?.length === 0 && isFetched
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Shipping form state
   const [shippingData, setShippingData] = useState<ShippingFormData>({
@@ -255,16 +257,17 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
   // Handle form submission
   const handleSubmitOrder = (e: React.FormEvent) => {
+    setIsSubmitting(true)
     e.preventDefault()
 
     // Log the complete order data
-    console.log("Order submitted with data:", {
-      shipping: shippingData,
-      payment: paymentData,
-      selectedPaymentMethod: paymentData.selectedPaymentMethodId
-        ? savedPaymentMethods.find((pm) => pm.id === paymentData.selectedPaymentMethodId)
-        : null,
-    })
+    // console.log("Order submitted with data:", {
+    //   shipping: shippingData,
+    //   payment: paymentData,
+    //   selectedPaymentMethod: paymentData.selectedPaymentMethodId
+    //     ? savedPaymentMethods.find((pm) => pm.id === paymentData.selectedPaymentMethodId)
+    //     : null,
+    // })
 
     const selectedPaymentMethod = paymentData.selectedPaymentMethodId
     ? savedPaymentMethods.find((pm) => pm.id === paymentData.selectedPaymentMethodId)
