@@ -9,77 +9,11 @@ import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import useOrder from "./useOrder"
 import { format } from "date-fns"
-import { useParams, useSearchParams } from "next/navigation"
+import { useParams } from "next/navigation"
 import { formatToDollars } from "@/helpers/common.helper"
 import { getCountryName, getStateName } from "@/helpers/address.helper"
 import OrderTimeline from "./OrderTimeline"
-// Mock data for a specific order
-const orderDetails = {
-  id: "ORD-38492",
-  date: "May 5, 2025",
-  total: 210.17,
-  subtotal: 189.98,
-  shipping: 4.99,
-  tax: 15.2,
-  status: "delivered",
-  items: [
-    {
-      id: 1,
-      name: "Minimalist Watch",
-      price: 129.99,
-      quantity: 1,
-      image: "/placeholder.svg?height=80&width=80",
-    },
-    {
-      id: 2,
-      name: "Leather Wallet",
-      price: 59.99,
-      quantity: 1,
-      image: "/placeholder.svg?height=80&width=80",
-    },
-  ],
-  tracking: "USP12345678",
-  carrier: "UPS",
-  deliveryDate: "May 10, 2025",
-  shippingAddress: {
-    name: "John Doe",
-    street: "123 Main St",
-    city: "San Francisco",
-    state: "CA",
-    zip: "94103",
-    country: "United States",
-  },
-  billingAddress: {
-    name: "John Doe",
-    street: "123 Main St",
-    city: "San Francisco",
-    state: "CA",
-    zip: "94103",
-    country: "United States",
-  },
-  paymentMethod: "Visa ending in 4242",
-  timeline: [
-    { date: "May 5, 2025", time: "10:23 AM", status: "Order Placed", description: "Your order has been received" },
-    {
-      date: "May 6, 2025",
-      time: "9:45 AM",
-      status: "Payment Confirmed",
-      description: "Payment has been processed successfully",
-    },
-    {
-      date: "May 7, 2025",
-      time: "2:30 PM",
-      status: "Order Shipped",
-      description: "Your order has been shipped via UPS",
-    },
-    {
-      date: "May 10, 2025",
-      time: "11:15 AM",
-      status: "Order Delivered",
-      description: "Your package has been delivered",
-    },
-  ],
-}
+
 
 // Status badge component
 function OrderStatusBadge({ status }: { status: string }) {
@@ -129,7 +63,6 @@ export default function OrderDetailsPage() {
   const searchParams = useParams()
   const id = searchParams.id
   const orderId = id?.toString().split("-")[1]
-  console.log(id, orderId)
 
   const { order, orderItems, orderShipping, orderContact, orderPayment, isLoading, error, statusHistory, statusHistoryLoading, statusHistoryError } = useOrder(orderId)
 
@@ -147,7 +80,7 @@ export default function OrderDetailsPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">Order {order?.id}</h1>
+            <h1 className="text-3xl font-bold">Order ORD-{order?.id}</h1>
             <p className="text-muted-foreground">Placed on {order?.created_at ? format(order?.created_at, "MMMM d, yyyy") : ""}</p>
           </div>
         </div>
