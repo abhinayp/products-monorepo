@@ -17,6 +17,7 @@ module Orders
     config.autoload_lib(ignore: %w[assets tasks])
     config.autoload_paths << Rails.root.join('app/clients')
     config.autoload_paths << Rails.root.join('app/modules')
+    config.autoload_paths << Rails.root.join('app/serializers')
 
     # Configuration for the application, engines, and railties goes here.
     #

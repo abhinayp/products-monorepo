@@ -1,8 +1,13 @@
+
 class HomeController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @orders = Order.where(user_id: current_user['id'])
+    orders = Order.where(user_id: current_user['id']).joins(:order_items).group('orders.id').order('orders.created_at DESC')
+
+    render json: orders, each_serializer: OrderSerializer, include: [
+      :order_items,
+    ]
   end
 
   def show

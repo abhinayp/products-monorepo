@@ -152,7 +152,7 @@ const defaultSavedPaymentMethods = [
 // Provider component
 export function CheckoutProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
-  const { mutateAsync: createOrder, isSuccess } = useMutation({
+  const { mutateAsync: createOrder, data: orderData, isSuccess } = useMutation({
     mutationFn: (body: CreateOrderDTO['request']) => homeClient.create(body),
   })
 
@@ -163,9 +163,9 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (isSuccess) {
-      router.push("/checkout/confirmation")
+      router.push(`/checkout/confirmation?orderId=${orderData?.order?.id}`)
     }
-  }, [isSuccess, router])
+  }, [isSuccess, router, orderData])
 
   const checkoutNotAvailable = cartData?.cart?.length === 0 && isFetched
 

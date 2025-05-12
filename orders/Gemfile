@@ -51,3 +51,4 @@ gem 'jwt', '~> 2.10', '>= 2.10.1'
 gem 'rack-cors', :require => 'rack/cors'
 gem "karafka", ">= 2.4.0"
 gem 'faraday', '~> 2.9'
+gem 'active_model_serializers', '~> 0.10.15'

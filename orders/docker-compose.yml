@@ -4,6 +4,8 @@ services:
   postgres:
     image: postgres:latest
     command: ["postgres", "-p", "5433"]
+    volumes:
+      - orders-db-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -41,3 +43,6 @@ networks:
   default:
     external:
       name: products
+
+volumes:
+  orders-db-data:

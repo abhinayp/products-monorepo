@@ -84,7 +84,7 @@ module OrderModule
         @order.save!
       end
 
-      return @order
+      return { order: @order }
     end
   end
 end
