@@ -47,6 +47,7 @@ export interface ShowOrderDTO {
       tax: number;
       gross_total_price: number;
       status: string;
+      created_at: string;
     };
     order_items: {
       id: number;

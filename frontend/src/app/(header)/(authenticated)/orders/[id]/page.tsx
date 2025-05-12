@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowLeft, Package, Truck, CheckCircle, Clock, AlertCircle, Download } from "lucide-react"
@@ -6,7 +7,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-
+import useOrder from "./useOrder"
+import { format } from "date-fns"
+import { useParams, useSearchParams } from "next/navigation"
+import { formatToDollars } from "@/helpers/common.helper"
+import { getCountryName, getStateName } from "@/helpers/address.helper"
 // Mock data for a specific order
 const orderDetails = {
   id: "ORD-38492",
@@ -92,7 +97,14 @@ function OrderStatusBadge({ status }: { status: string }) {
           Shipped
         </Badge>
       )
-    case "processing":
+    case "completed":
+      return (
+        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+          <Truck className="h-3.5 w-3.5 mr-1" />
+          Placed
+        </Badge>
+      )
+    case "pending":
       return (
         <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
           <Clock className="h-3.5 w-3.5 mr-1" />
@@ -111,9 +123,17 @@ function OrderStatusBadge({ status }: { status: string }) {
   }
 }
 
-export default function OrderDetailsPage({ params }: { params: { id: string } }) {
+export default function OrderDetailsPage() {
   // In a real app, you would fetch the order details based on the ID
-  const orderId = params.id
+  const searchParams = useParams()
+  const id = searchParams.id
+  const orderId = id?.toString().split("-")[1]
+  console.log(id, orderId)
+
+  const { order, orderItems, orderShipping, orderContact, orderPayment, isLoading, error } = useOrder(orderId)
+
+  if (isLoading) return <OrderDetailsPage.Skeleton />
+  if (error) return <div>Error: {error.message}</div>
 
   return (
     <div className="container mx-auto py-10 px-4">
@@ -126,11 +146,11 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">Order {orderDetails.id}</h1>
-            <p className="text-muted-foreground">Placed on {orderDetails.date}</p>
+            <h1 className="text-3xl font-bold">Order {order?.id}</h1>
+            <p className="text-muted-foreground">Placed on {order?.created_at ? format(order?.created_at, "MMMM d, yyyy") : ""}</p>
           </div>
         </div>
-        <OrderStatusBadge status={orderDetails.status} />
+        <OrderStatusBadge status={order?.status || ""} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -150,25 +170,25 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {orderDetails.items.map((item) => (
+                  {orderItems?.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <div className="relative h-16 w-16 overflow-hidden rounded-md">
                             <Image
-                              src={item.image || "/placeholder.svg"}
-                              alt={item.name}
+                              src={item.image_url || "/placeholder.svg"}
+                              alt={item.title}
                               fill
                               className="object-cover"
                             />
                           </div>
-                          <span className="font-medium">{item.name}</span>
+                          <span className="font-medium">{item.title}</span>
                         </div>
                       </TableCell>
-                      <TableCell className="text-right">${item.price.toFixed(2)}</TableCell>
+                      <TableCell className="text-right">{formatToDollars(item.unit_price || 0)}</TableCell>
                       <TableCell className="text-right">{item.quantity}</TableCell>
                       <TableCell className="text-right font-medium">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {formatToDollars(item.unit_price * item.quantity)}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -186,27 +206,25 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
                 <div>
                   <h3 className="font-medium mb-2">Shipping Address</h3>
                   <p className="text-sm text-muted-foreground">
-                    {orderDetails.shippingAddress.name}
+                    {orderShipping?.street}
                     <br />
-                    {orderDetails.shippingAddress.street}
+                    {orderShipping?.city}, {getStateName(orderShipping?.state || "")}{" "}
+                    {orderShipping?.zip}
                     <br />
-                    {orderDetails.shippingAddress.city}, {orderDetails.shippingAddress.state}{" "}
-                    {orderDetails.shippingAddress.zip}
-                    <br />
-                    {orderDetails.shippingAddress.country}
+                    {getCountryName(orderShipping?.country || "")}
                   </p>
                 </div>
                 <div>
                   <h3 className="font-medium mb-2">Billing Address</h3>
                   <p className="text-sm text-muted-foreground">
-                    {orderDetails.billingAddress.name}
+                    {orderContact?.name}
                     <br />
-                    {orderDetails.billingAddress.street}
+                    {orderPayment?.street}
                     <br />
-                    {orderDetails.billingAddress.city}, {orderDetails.billingAddress.state}{" "}
-                    {orderDetails.billingAddress.zip}
+                    {orderPayment?.city}, {getStateName(orderPayment?.state || "")}{" "}
+                    {orderPayment?.zip}
                     <br />
-                    {orderDetails.billingAddress.country}
+                    {getCountryName(orderPayment?.country || "")}
                   </p>
                 </div>
               </div>
@@ -216,15 +234,15 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="font-medium mb-2">Shipping Method</h3>
-                  <p className="text-sm text-muted-foreground">Standard Shipping ({orderDetails.carrier})</p>
+                  <p className="text-sm text-muted-foreground">Standard Shipping ({orderShipping?.carrier || "UPS"})</p>
                 </div>
                 <div>
                   <h3 className="font-medium mb-2">Payment Method</h3>
-                  <p className="text-sm text-muted-foreground">{orderDetails.paymentMethod}</p>
+                  <p className="text-sm text-muted-foreground">{orderPayment?.description}</p>
                 </div>
               </div>
 
-              {orderDetails.status === "shipped" || orderDetails.status === "delivered" ? (
+              {/* {orderDetails.status === "shipped" || orderDetails.status === "delivered" ? (
                 <>
                   <Separator className="my-4" />
                   <div>
@@ -243,7 +261,7 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : null} */}
             </CardContent>
           </Card>
 
@@ -283,20 +301,20 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
               <div className="space-y-1.5">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span>${orderDetails.subtotal.toFixed(2)}</span>
+                  <span>{formatToDollars(order?.gross_total_price || 0)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Shipping</span>
-                  <span>${orderDetails.shipping.toFixed(2)}</span>
+                  <span>{formatToDollars(0)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Tax</span>
-                  <span>${orderDetails.tax.toFixed(2)}</span>
+                  <span>{formatToDollars(order?.tax || 0)}</span>
                 </div>
                 <Separator className="my-2" />
                 <div className="flex justify-between font-medium text-lg">
                   <span>Total</span>
-                  <span>${orderDetails.total.toFixed(2)}</span>
+                  <span>{formatToDollars(order?.total_price || 0)}</span>
                 </div>
               </div>
             </CardContent>
@@ -324,6 +342,61 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
               </div>
             </CardContent>
           </Card>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+OrderDetailsPage.Skeleton = () => {
+  return (
+    <div className="container mx-auto py-10 px-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <div className="flex items-center gap-2">
+          <div className="h-10 w-10 rounded-md animate-pulse bg-gray-200" />
+          <div>
+            <div className="h-8 w-48 rounded animate-pulse bg-gray-200" />
+            <div className="h-4 w-32 mt-2 rounded animate-pulse bg-gray-200" />
+          </div>
+        </div>
+        <div className="h-6 w-24 rounded animate-pulse bg-gray-200" />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <div className="rounded-lg border bg-card">
+            <div className="p-6">
+              <div className="h-6 w-32 rounded animate-pulse bg-gray-200" />
+            </div>
+            <div className="p-6">
+              <div className="space-y-4">
+                {[...Array(2)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="h-16 w-16 rounded animate-pulse bg-gray-200" />
+                    <div className="flex-1">
+                      <div className="h-4 w-48 rounded animate-pulse bg-gray-200" />
+                      <div className="h-4 w-24 mt-2 rounded animate-pulse bg-gray-200" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border bg-card">
+            <div className="p-6">
+              <div className="h-6 w-32 rounded animate-pulse bg-gray-200" />
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="h-10 w-full rounded animate-pulse bg-gray-200" />
+              <div className="h-10 w-full rounded animate-pulse bg-gray-200" />
+              <div className="h-px w-full bg-gray-200" />
+              <div className="space-y-2">
+                <div className="h-4 w-48 rounded animate-pulse bg-gray-200" />
+                <div className="h-4 w-32 rounded animate-pulse bg-gray-200" />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
