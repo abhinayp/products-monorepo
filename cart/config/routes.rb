@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   get "/", to: "home#index"
-
+  delete "/", to: "home#destroy"
   resources :items, only: [:create, :update, :destroy] do
     collection do
       get :get_products_cart_items

@@ -10,12 +10,24 @@ class HomeController < ApplicationController
   end
 
   def create
-    @order = Order.create(order_params)
+    order_shipping = params[:order_shipping]
+    order_contact = params[:order_contact]
+    order_payment = params[:order_payment]
+
+    order_data = OrderModule::OrderHelper.create_order(order_shipping: order_shipping, order_contact: order_contact, order_payment: order_payment)
+    if order_data[:error]
+      render json: { error: order_data[:error] }, status: :bad_request
+      return
+    end
+
+    CartClient::HomeClient.new.destroy(current_user['id'])
+
+    render json: order_data, status: :created
   end
 
   private
 
   def order_params
-    params.require(:order).permit(:status, :cart_id, :order_payment, :order_shipping, :order_contact)
+    params.require(:order).permit(:order_payment, :order_shipping, :order_contact)
   end
 end

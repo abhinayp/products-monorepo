@@ -10,10 +10,14 @@ class Order < ApplicationRecord
   validates :status, inclusion: { in: %w[pending payment_failed completed cancelled shipped delivered] }
 
   before_create :set_initial_status
-
+  after_create :create_status_history
   private
 
   def set_initial_status
     self.status ||= 'pending'
+  end
+
+  def create_status_history
+    OrderStatusHistory.create(order: self, status: self.status)
   end
 end
