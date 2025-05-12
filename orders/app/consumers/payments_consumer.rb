@@ -11,6 +11,7 @@ class PaymentsConsumer < ApplicationConsumer
         else
           Order.find(order_id).update_status('payment_failed')
         end
+        OrdersProducer.updated(order_id: order_id)
       end
     end
   end
