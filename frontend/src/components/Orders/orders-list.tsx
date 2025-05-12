@@ -17,61 +17,63 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 import { Separator } from "@/components/ui/separator"
+import useOrders from "./useOrders"
+import { formatToDollars } from "@/helpers/common.helper"
 
 // Mock data for orders
-const mockOrders = [
-  {
-    id: "ORD-38492",
-    date: new Date(2025, 4, 5), // May 5, 2025
-    total: 210.17,
-    status: "delivered",
-    items: [
-      { id: 1, name: "Minimalist Watch", price: 129.99, quantity: 1 },
-      { id: 2, name: "Leather Wallet", price: 59.99, quantity: 1 },
-    ],
-    tracking: "USP12345678",
-    deliveryDate: new Date(2025, 4, 10), // May 10, 2025
-  },
-  {
-    id: "ORD-38475",
-    date: new Date(2025, 3, 28), // April 28, 2025
-    total: 349.95,
-    status: "shipped",
-    items: [
-      { id: 3, name: "Wireless Headphones", price: 199.99, quantity: 1 },
-      { id: 4, name: "Smart Water Bottle", price: 49.99, quantity: 1 },
-      { id: 5, name: "Fitness Tracker", price: 99.97, quantity: 1 },
-    ],
-    tracking: "USP87654321",
-    deliveryDate: new Date(2025, 4, 15), // May 15, 2025
-  },
-  {
-    id: "ORD-38461",
-    date: new Date(2025, 3, 15), // April 15, 2025
-    total: 89.99,
-    status: "processing",
-    items: [
-      { id: 6, name: "Portable Charger", price: 39.99, quantity: 1 },
-      { id: 7, name: "Phone Case", price: 25.0, quantity: 2 },
-    ],
-  },
-  {
-    id: "ORD-38442",
-    date: new Date(2025, 3, 2), // April 2, 2025
-    total: 159.98,
-    status: "cancelled",
-    items: [{ id: 8, name: "Bluetooth Speaker", price: 79.99, quantity: 2 }],
-  },
-  {
-    id: "ORD-38421",
-    date: new Date(2025, 2, 20), // March 20, 2025
-    total: 499.99,
-    status: "delivered",
-    items: [{ id: 9, name: "Tablet", price: 499.99, quantity: 1 }],
-    tracking: "USP11223344",
-    deliveryDate: new Date(2025, 2, 25), // March 25, 2025
-  },
-]
+// const mockOrders = [
+//   {
+//     id: "ORD-38492",
+//     date: new Date(2025, 4, 5), // May 5, 2025
+//     total: 210.17,
+//     status: "delivered",
+//     items: [
+//       { id: 1, name: "Minimalist Watch", price: 129.99, quantity: 1 },
+//       { id: 2, name: "Leather Wallet", price: 59.99, quantity: 1 },
+//     ],
+//     tracking: "USP12345678",
+//     deliveryDate: new Date(2025, 4, 10), // May 10, 2025
+//   },
+//   {
+//     id: "ORD-38475",
+//     date: new Date(2025, 3, 28), // April 28, 2025
+//     total: 349.95,
+//     status: "shipped",
+//     items: [
+//       { id: 3, name: "Wireless Headphones", price: 199.99, quantity: 1 },
+//       { id: 4, name: "Smart Water Bottle", price: 49.99, quantity: 1 },
+//       { id: 5, name: "Fitness Tracker", price: 99.97, quantity: 1 },
+//     ],
+//     tracking: "USP87654321",
+//     deliveryDate: new Date(2025, 4, 15), // May 15, 2025
+//   },
+//   {
+//     id: "ORD-38461",
+//     date: new Date(2025, 3, 15), // April 15, 2025
+//     total: 89.99,
+//     status: "processing",
+//     items: [
+//       { id: 6, name: "Portable Charger", price: 39.99, quantity: 1 },
+//       { id: 7, name: "Phone Case", price: 25.0, quantity: 2 },
+//     ],
+//   },
+//   {
+//     id: "ORD-38442",
+//     date: new Date(2025, 3, 2), // April 2, 2025
+//     total: 159.98,
+//     status: "cancelled",
+//     items: [{ id: 8, name: "Bluetooth Speaker", price: 79.99, quantity: 2 }],
+//   },
+//   {
+//     id: "ORD-38421",
+//     date: new Date(2025, 2, 20), // March 20, 2025
+//     total: 499.99,
+//     status: "delivered",
+//     items: [{ id: 9, name: "Tablet", price: 499.99, quantity: 1 }],
+//     tracking: "USP11223344",
+//     deliveryDate: new Date(2025, 2, 25), // March 25, 2025
+//   },
+// ]
 
 // Status badge component
 function OrderStatusBadge({ status }: { status: string }) {
@@ -90,7 +92,14 @@ function OrderStatusBadge({ status }: { status: string }) {
           Shipped
         </Badge>
       )
-    case "processing":
+    case "completed":
+      return (
+        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+          <Truck className="h-3.5 w-3.5 mr-1" />
+          Placed
+        </Badge>
+      )
+    case "pending":
       return (
         <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
           <Clock className="h-3.5 w-3.5 mr-1" />
@@ -111,13 +120,16 @@ function OrderStatusBadge({ status }: { status: string }) {
 
 export default function OrdersList() {
   const [searchQuery, setSearchQuery] = useState("")
+  const { orders, isLoading, error } = useOrders()
+
+  if (isLoading) return <OrdersList.Skeleton />
 
   // Filter orders based on search query
-  const filteredOrders = mockOrders.filter(
+  const filteredOrders = orders?.filter(
     (order) =>
-      order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.items.some((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase())),
-  )
+      String(order.id).toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.order_items.some((item) => item.title.toLowerCase().includes(searchQuery.toLowerCase())),
+  ) || []
 
   return (
     <div className="space-y-6">
@@ -155,25 +167,25 @@ export default function OrdersList() {
               <Card key={order.id} className="overflow-hidden">
                 <div className="bg-muted px-4 py-3 flex justify-between items-center">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
-                    <span className="font-medium">{order.id}</span>
-                    <span className="text-sm text-muted-foreground">{format(order.date, "MMMM d, yyyy")}</span>
+                    <span className="font-medium">ORD-{order.id}</span>
+                    <span className="text-sm text-muted-foreground">{format(order.created_at, "MMMM d, yyyy")}</span>
                   </div>
                   <OrderStatusBadge status={order.status} />
                 </div>
                 <CardContent className="p-4">
                   <div className="space-y-3">
-                    {order.items.map((item) => (
+                    {order.order_items.map((item) => (
                       <div key={item.id} className="flex justify-between items-center">
                         <div>
-                          <p className="font-medium">{item.name}</p>
+                          <p className="font-medium">{item.title}</p>
                           <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
                         </div>
-                        <p className="font-medium">${item.price.toFixed(2)}</p>
+                        <p className="font-medium">{formatToDollars(item.unit_price)}</p>
                       </div>
                     ))}
                   </div>
 
-                  {(order.status === "shipped" || order.status === "delivered") && (
+                  {/* {(order.status === "shipped" || order.status === "delivered") && (
                     <>
                       <Separator className="my-4" />
                       <div className="flex flex-col sm:flex-row justify-between gap-2">
@@ -193,12 +205,12 @@ export default function OrdersList() {
                         )}
                       </div>
                     </>
-                  )}
+                  )} */}
                 </CardContent>
                 <CardFooter className="flex justify-between items-center border-t p-4 bg-muted/30">
-                  <p className="font-medium">Total: ${order.total.toFixed(2)}</p>
+                  <p className="font-medium">Total: {formatToDollars(order.total_price)}</p>
                   <Button asChild variant="outline" size="sm">
-                    <Link href={`/orders/${order.id}`}>
+                    <Link href={`/orders/ORD-${order.id}`}>
                       View Details
                       <ChevronRight className="ml-1 h-4 w-4" />
                     </Link>
@@ -208,7 +220,7 @@ export default function OrdersList() {
             ))}
           </div>
 
-          <Pagination>
+          {/* <Pagination>
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious href="#" />
@@ -228,9 +240,45 @@ export default function OrdersList() {
                 <PaginationNext href="#" />
               </PaginationItem>
             </PaginationContent>
-          </Pagination>
+          </Pagination> */}
         </>
       )}
+    </div>
+  )
+}
+
+OrdersList.Skeleton = () => {
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-4">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Card key={i}>
+            <CardContent className="p-4">
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="h-16 w-16 rounded animate-pulse bg-muted" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-1/4 animate-pulse bg-muted rounded" />
+                    <div className="h-4 w-1/2 animate-pulse bg-muted rounded" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-4 w-1/3 animate-pulse bg-muted rounded" />
+                  <div className="h-4 w-1/4 animate-pulse bg-muted rounded" />
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter className="flex justify-between items-center border-t p-4 bg-muted/30">
+              <div className="h-4 w-24 animate-pulse bg-muted rounded" />
+              <div className="h-9 w-32 animate-pulse bg-muted rounded" />
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+
+      <div className="flex justify-center">
+        <div className="h-10 w-[350px] animate-pulse bg-muted rounded" />
+      </div>
     </div>
   )
 }

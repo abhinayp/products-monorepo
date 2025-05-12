@@ -15,7 +15,7 @@ export default function OrdersPage() {
           <h1 className="text-3xl font-bold">My Orders</h1>
           <p className="text-muted-foreground mt-1">View and track your order history</p>
         </div>
-        <OrdersFilter />
+        {/* <OrdersFilter /> */}
       </div>
 
       <OrdersList />

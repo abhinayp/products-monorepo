@@ -1,4 +1,4 @@
-import { CreateOrderDTO, ShowOrderDTO } from "./dto/home.dto"
+import { CreateOrderDTO, OrdersDTO, ShowOrderDTO } from "./dto/home.dto"
 import { OrdersClient } from "./orders.base"
 
 export class HomeClient extends OrdersClient {
@@ -10,6 +10,23 @@ export class HomeClient extends OrdersClient {
         },
       },
     })
+  }
+
+  async index(params: OrdersDTO['request']={}) {
+    const queryParams = new URLSearchParams()
+    if (params.page) {
+      queryParams.set('page', params.page.toString())
+    }
+    if (params.offset) {
+      queryParams.set('offset', params.offset.toString())
+    }
+    const response = await this.fetch<OrdersDTO['response']>(`/?${queryParams.toString()}`, {
+      method: 'GET',
+    })
+    if (!response.ok) {
+      throw new Error("Failed to get orders")
+    }
+    return await response.json()
   }
 
   async show(params: ShowOrderDTO['request']) {

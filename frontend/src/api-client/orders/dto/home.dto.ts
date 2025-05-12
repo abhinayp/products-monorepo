@@ -85,3 +85,26 @@ export interface ShowOrderDTO {
     }
   }
 }
+
+export interface OrdersDTO {
+  request: {
+    page?: number;
+    offset?: number;
+  }
+  response: {
+    id: number;
+    total_price: number;
+    tax: number;
+    gross_total_price: number;
+    status: string;
+    order_items: {
+      id: number;
+      title: string;
+      unit_price: number;
+      quantity: number;
+      image_url: string;
+      product_id: number;
+    }[];
+    created_at: string;
+  }[];
+}
