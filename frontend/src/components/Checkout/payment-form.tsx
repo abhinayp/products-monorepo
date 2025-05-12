@@ -11,6 +11,8 @@ import { Check, CreditCard, Loader2, Plus } from "lucide-react"
 import ShippingForm from "./shipping-form"
 import SavedPaymentMethods from "./saved-payment-methods"
 import { useCheckout } from "./CheckoutContext"
+import FormValidationStatus from "./FormValidationStatus"
+import { formatToDollars } from "@/helpers/common.helper"
 
 export default function PaymentForm() {
   const {
@@ -18,11 +20,15 @@ export default function PaymentForm() {
     savedPaymentMethods,
     showNewCardForm,
     isSubmitting,
+    isFormValid,
     updatePaymentData,
     setShowNewCardForm,
-    selectPaymentMethod,
     handleSubmitOrder,
+    cartData
   } = useCheckout()
+
+
+  const totalPrice = cartData?.cart_metadata?.net_total_price
 
   return (
     <form onSubmit={handleSubmitOrder}>
@@ -76,6 +82,7 @@ export default function PaymentForm() {
                           placeholder="1234 5678 9012 3456"
                           value={paymentData.cardNumber}
                           onChange={(e) => updatePaymentData({ cardNumber: e.target.value })}
+                          required={showNewCardForm && paymentData.paymentType === "card"}
                         />
                       </div>
                       <div>
@@ -85,6 +92,7 @@ export default function PaymentForm() {
                           placeholder="MM/YY"
                           value={paymentData.expiryDate}
                           onChange={(e) => updatePaymentData({ expiryDate: e.target.value })}
+                          required={showNewCardForm && paymentData.paymentType === "card"}
                         />
                       </div>
                       <div>
@@ -94,6 +102,7 @@ export default function PaymentForm() {
                           placeholder="123"
                           value={paymentData.cvc}
                           onChange={(e) => updatePaymentData({ cvc: e.target.value })}
+                          required={showNewCardForm && paymentData.paymentType === "card"}
                         />
                       </div>
                       <div className="col-span-2">
@@ -103,6 +112,7 @@ export default function PaymentForm() {
                           placeholder="John Doe"
                           value={paymentData.nameOnCard}
                           onChange={(e) => updatePaymentData({ nameOnCard: e.target.value })}
+                          required={showNewCardForm && paymentData.paymentType === "card"}
                         />
                       </div>
                     </div>
@@ -168,6 +178,7 @@ export default function PaymentForm() {
                 <span>Your shipping information is valid</span>
               </div>
               <Separator />
+              <FormValidationStatus />
               <p className="text-sm text-muted-foreground">
                 By clicking "Place Order", you agree to our Terms of Service and Privacy Policy. You will be charged the
                 total amount shown in the order summary.
@@ -175,7 +186,7 @@ export default function PaymentForm() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button type="submit" className="w-full" disabled={isSubmitting || !isFormValid}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -184,7 +195,7 @@ export default function PaymentForm() {
               ) : (
                 <>
                   <CreditCard className="mr-2 h-4 w-4" />
-                  Place Order
+                  Place Order ({formatToDollars(totalPrice || 0)})
                 </>
               )}
             </Button>

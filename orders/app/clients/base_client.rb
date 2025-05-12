@@ -43,8 +43,8 @@ class BaseClient
     handle_response { @client.patch(build_path(path), body) }
   end
 
-  def delete(path)
-    handle_response { @client.delete(build_path(path)) }
+  def delete(path, body = {})
+    handle_response { @client.delete(build_path(path), body) }
   end
 
   private

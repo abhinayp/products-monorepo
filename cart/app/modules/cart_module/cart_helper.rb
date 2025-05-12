@@ -22,8 +22,12 @@ module CartModule
 
     def self.clear_cart(user_id:)
       ActiveRecord::Base.transaction do
-        CartItem.where(user_id: user_id).destroy_all
+        cartItems = CartItem.where(user_id: user_id)
+        cartItems.destroy_all
         CartMetadata.find_by(user_id: user_id).destroy
+        cartItems.each do |cartItem|
+          CartProducer.update_metrics(product_id: cartItem.product_id, new_item_count: -1 * cartItem.count)
+        end
       end
 
       return { success: true }

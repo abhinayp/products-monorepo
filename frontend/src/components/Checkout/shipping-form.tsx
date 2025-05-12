@@ -27,6 +27,7 @@ export default function ShippingForm() {
               placeholder="John"
               value={shippingData.firstName}
               onChange={(e) => updateShippingData({ firstName: e.target.value })}
+              required
             />
           </div>
           <div>
@@ -36,6 +37,7 @@ export default function ShippingForm() {
               placeholder="Doe"
               value={shippingData.lastName}
               onChange={(e) => updateShippingData({ lastName: e.target.value })}
+              required
             />
           </div>
           <div className="md:col-span-2">
@@ -46,6 +48,7 @@ export default function ShippingForm() {
               placeholder="john.doe@example.com"
               value={shippingData.email}
               onChange={(e) => updateShippingData({ email: e.target.value })}
+              required
             />
           </div>
           <div className="md:col-span-2">
@@ -55,6 +58,7 @@ export default function ShippingForm() {
               placeholder="123 Main St"
               value={shippingData.address}
               onChange={(e) => updateShippingData({ address: e.target.value })}
+              required
             />
           </div>
           <div className="md:col-span-2">
@@ -73,6 +77,7 @@ export default function ShippingForm() {
               placeholder="San Francisco"
               value={shippingData.city}
               onChange={(e) => updateShippingData({ city: e.target.value })}
+              required
             />
           </div>
           <div>
@@ -97,6 +102,7 @@ export default function ShippingForm() {
               placeholder="94103"
               value={shippingData.zipCode}
               onChange={(e) => updateShippingData({ zipCode: e.target.value })}
+              required
             />
           </div>
           <div>
@@ -120,6 +126,7 @@ export default function ShippingForm() {
               placeholder="(123) 456-7890"
               value={shippingData.phone}
               onChange={(e) => updateShippingData({ phone: e.target.value })}
+              required
             />
           </div>
         </div>

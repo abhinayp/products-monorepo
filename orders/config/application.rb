@@ -33,7 +33,16 @@ module Orders
 
 
     if ENV["APPLICATION_HOST"]
-      config.hosts << ENV["APPLICATION_HOST"]
+      config.hosts = config.hosts + ENV["APPLICATION_HOST"].split(',')
+    end
+
+    if ENV['CORS_ORIGINS']
+      config.middleware.insert_before 0, Rack::Cors do
+        allow do
+          origins ENV['CORS_ORIGINS']
+          resource '*', headers: :any, methods: [:get, :post, :put, :patch, :delete, :options, :head], credentials: true
+        end
+      end
     end
   end
 end

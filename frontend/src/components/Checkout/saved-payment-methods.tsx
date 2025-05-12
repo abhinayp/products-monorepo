@@ -58,11 +58,9 @@ export default function SavedPaymentMethods() {
                 </div>
                 <div>
                   <p className="font-medium">
-                    {method.cardBrand.charAt(0).toUpperCase() + method.cardBrand.slice(1)} •••• {method.last4}
+                    {method.cardBrand.charAt(0).toUpperCase() + method.cardBrand.slice(1)} •••• {method.cardNumber.slice(-4)}
                   </p>
-                  <p className="text-sm text-muted-foreground">
-                    Expires {method.expiryMonth}/{method.expiryYear}
-                  </p>
+                  <p className="text-sm text-muted-foreground">Expires {method.expiryDate}</p>
                 </div>
               </div>
 

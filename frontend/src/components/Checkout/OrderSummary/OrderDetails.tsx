@@ -1,23 +1,15 @@
-import { itemsClient } from '@/api-client/cart/items.client'
 import { Item } from '@/components/Cart'
 import { CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { formatToDollars } from '@/helpers/common.helper'
-import { useQuery } from '@tanstack/react-query'
+import { useCheckout } from '../CheckoutContext'
 
 const OrderDetails = () => {
-  const { data: cartData, isLoading } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => itemsClient.getCart(),
-  })
+  const { cartData } = useCheckout()
 
   const subtotal = Number(cartData?.cart_metadata?.gross_total_price) || 0
   const tax = Number(cartData?.cart_metadata?.tax)
   const total = Number(cartData?.cart_metadata?.net_total_price) || 0
-
-  if (isLoading) {
-    return <OrderDetails.Skeleton />
-  }
 
   return (
     <CardContent className="space-y-4">

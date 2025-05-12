@@ -1,3 +1,4 @@
+import { CreateOrderDTO } from "./dto/home.dto"
 import { OrdersClient } from "./orders.base"
 
 export class HomeClient extends OrdersClient {
@@ -11,8 +12,11 @@ export class HomeClient extends OrdersClient {
     })
   }
 
-  async create() {
-    const response = await this.fetch<{}>('/')
+  async create(body: CreateOrderDTO['request']) {
+    const response = await this.fetch<CreateOrderDTO['response']>('/', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    })
     if (!response.ok) {
       throw new Error("Failed to get cart")
     }

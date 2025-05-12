@@ -1,4 +1,5 @@
 class OrderShipping < ApplicationRecord
+  self.table_name = "order_shipping"
   belongs_to :order
 
   validates :street, :city, :state, :zip, :country, presence: true

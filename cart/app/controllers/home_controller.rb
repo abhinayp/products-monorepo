@@ -1,5 +1,5 @@
 class HomeController < ApplicationController
-  before_action :authenticate_server_or_user!, only: [:index, :clear_cart]
+  before_action :authenticate_server_or_user!, only: [:index, :destroy]
 
   def index
     user_id = current_user['id'] if @authorization_type == 'user'

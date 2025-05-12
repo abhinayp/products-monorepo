@@ -1,4 +1,5 @@
 class OrderStatusHistory < ApplicationRecord
+  self.table_name = "order_status_history"
   belongs_to :order
 
   validates :status, presence: true
