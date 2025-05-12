@@ -49,3 +49,5 @@ end
 
 
 gem "karafka", ">= 2.4.0"
+gem 'faraday', '~> 2.9'
+

@@ -67,6 +67,9 @@ class KarafkaApp < Karafka::App
     #   # config(partitions: 2, 'cleanup.policy': 'compact')
     #   consumer ExampleConsumer
     # end
+    topic :payments do
+      consumer PaymentsConsumer
+    end
   end
 end
 

@@ -11,6 +11,14 @@ class Order < ApplicationRecord
 
   before_create :set_initial_status
   after_create :create_status_history
+
+
+  def update_status(status)
+    self.update(status: status)
+    OrderStatusHistory.create(order: self, status: status)
+  end
+
+
   private
 
   def set_initial_status

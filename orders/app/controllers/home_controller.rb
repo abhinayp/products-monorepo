@@ -1,6 +1,7 @@
 
 class HomeController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, only: [:index, :status_history, :create]
+  before_action :authenticate_server_or_user!, only: [:show]
 
   def index
     orders = Order.where(user_id: current_user['id']).joins(:order_items).group('orders.id').order('orders.created_at DESC')

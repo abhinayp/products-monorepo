@@ -84,6 +84,8 @@ module OrderModule
         @order.save!
       end
 
+      OrdersProducer.created(order_id: @order.id)
+
       return { order: @order }
     end
   end
