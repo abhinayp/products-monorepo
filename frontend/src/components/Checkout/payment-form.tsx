@@ -1,62 +1,31 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Check, CreditCard, Loader2, Plus } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import ShippingForm from "@/components/shipping-form"
-import SavedPaymentMethods from "@/components/saved-payment-methods"
-
-// Mock saved payment methods
-const savedPaymentMethods = [
-  {
-    id: "pm_1",
-    cardBrand: "visa",
-    last4: "4242",
-    expiryMonth: "12",
-    expiryYear: "2026",
-    cardholderName: "John Doe",
-    isDefault: true,
-  },
-  {
-    id: "pm_2",
-    cardBrand: "mastercard",
-    last4: "5555",
-    expiryMonth: "08",
-    expiryYear: "2025",
-    cardholderName: "John Doe",
-    isDefault: false,
-  },
-]
+import { Check, CreditCard, Loader2, Plus } from "lucide-react"
+import ShippingForm from "./shipping-form"
+import SavedPaymentMethods from "./saved-payment-methods"
+import { useCheckout } from "./CheckoutContext"
 
 export default function PaymentForm() {
-  const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string | null>(
-    savedPaymentMethods.find((pm) => pm.isDefault)?.id || null,
-  )
-  const [showNewCardForm, setShowNewCardForm] = useState(false)
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    // Simulate payment processing
-    setTimeout(() => {
-      router.push("/checkout/confirmation")
-    }, 2000)
-  }
+  const {
+    paymentData,
+    savedPaymentMethods,
+    showNewCardForm,
+    isSubmitting,
+    updatePaymentData,
+    setShowNewCardForm,
+    selectPaymentMethod,
+    handleSubmitOrder,
+  } = useCheckout()
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmitOrder}>
       <div className="space-y-8">
         <ShippingForm />
 
@@ -66,7 +35,10 @@ export default function PaymentForm() {
             <CardDescription>Select your preferred payment method</CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="card">
+            <Tabs
+              value={paymentData.paymentType}
+              onValueChange={(value) => updatePaymentData({ paymentType: value as "card" | "paypal" | "apple" })}
+            >
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="card">Credit Card</TabsTrigger>
                 <TabsTrigger value="paypal">PayPal</TabsTrigger>
@@ -76,11 +48,7 @@ export default function PaymentForm() {
               <TabsContent value="card" className="space-y-4 pt-4">
                 {savedPaymentMethods.length > 0 && !showNewCardForm && (
                   <div className="space-y-4">
-                    <SavedPaymentMethods
-                      paymentMethods={savedPaymentMethods}
-                      selectedPaymentMethod={selectedPaymentMethod}
-                      onSelectPaymentMethod={setSelectedPaymentMethod}
-                    />
+                    <SavedPaymentMethods />
 
                     <div className="flex justify-between items-center">
                       <Button
@@ -103,24 +71,48 @@ export default function PaymentForm() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="col-span-2">
                         <Label htmlFor="cardNumber">Card Number</Label>
-                        <Input id="cardNumber" placeholder="1234 5678 9012 3456" />
+                        <Input
+                          id="cardNumber"
+                          placeholder="1234 5678 9012 3456"
+                          value={paymentData.cardNumber}
+                          onChange={(e) => updatePaymentData({ cardNumber: e.target.value })}
+                        />
                       </div>
                       <div>
                         <Label htmlFor="expiryDate">Expiry Date</Label>
-                        <Input id="expiryDate" placeholder="MM/YY" />
+                        <Input
+                          id="expiryDate"
+                          placeholder="MM/YY"
+                          value={paymentData.expiryDate}
+                          onChange={(e) => updatePaymentData({ expiryDate: e.target.value })}
+                        />
                       </div>
                       <div>
                         <Label htmlFor="cvc">CVC</Label>
-                        <Input id="cvc" placeholder="123" />
+                        <Input
+                          id="cvc"
+                          placeholder="123"
+                          value={paymentData.cvc}
+                          onChange={(e) => updatePaymentData({ cvc: e.target.value })}
+                        />
                       </div>
                       <div className="col-span-2">
                         <Label htmlFor="nameOnCard">Name on Card</Label>
-                        <Input id="nameOnCard" placeholder="John Doe" />
+                        <Input
+                          id="nameOnCard"
+                          placeholder="John Doe"
+                          value={paymentData.nameOnCard}
+                          onChange={(e) => updatePaymentData({ nameOnCard: e.target.value })}
+                        />
                       </div>
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <RadioGroup defaultValue="save" className="flex">
+                      <RadioGroup
+                        value={paymentData.saveCard ? "save" : "dont-save"}
+                        onValueChange={(value) => updatePaymentData({ saveCard: value === "save" })}
+                        className="flex"
+                      >
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="save" id="save" />
                           <Label htmlFor="save">Save card for future purchases</Label>

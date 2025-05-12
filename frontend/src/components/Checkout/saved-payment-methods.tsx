@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { CreditCard, Trash2, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,58 +13,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { useCheckout } from "./CheckoutContext"
+import { useState } from "react"
 
-interface PaymentMethod {
-  id: string
-  cardBrand: string
-  last4: string
-  expiryMonth: string
-  expiryYear: string
-  cardholderName: string
-  isDefault: boolean
-}
+export default function SavedPaymentMethods() {
+  const { savedPaymentMethods, paymentData, selectPaymentMethod, deletePaymentMethod } = useCheckout()
 
-interface SavedPaymentMethodsProps {
-  paymentMethods: PaymentMethod[]
-  selectedPaymentMethod: string | null
-  onSelectPaymentMethod: (id: string) => void
-}
-
-export default function SavedPaymentMethods({
-  paymentMethods,
-  selectedPaymentMethod,
-  onSelectPaymentMethod,
-}: SavedPaymentMethodsProps) {
-  const [paymentMethodsState, setPaymentMethodsState] = useState<PaymentMethod[]>(paymentMethods)
   const [deleteId, setDeleteId] = useState<string | null>(null)
-
-  const handleDelete = (id: string) => {
-    setPaymentMethodsState(paymentMethodsState.filter((pm) => pm.id !== id))
-    if (selectedPaymentMethod === id) {
-      const nextDefault = paymentMethodsState.find((pm) => pm.id !== id)
-      if (nextDefault) {
-        onSelectPaymentMethod(nextDefault.id)
-      } else {
-        onSelectPaymentMethod("")
-      }
-    }
-    setDeleteId(null)
-  }
-
-  const getCardIcon = (brand: string) => {
-    switch (brand.toLowerCase()) {
-      case "visa":
-        return "visa"
-      case "mastercard":
-        return "mastercard"
-      case "amex":
-        return "amex"
-      case "discover":
-        return "discover"
-      default:
-        return "generic"
-    }
-  }
 
   const getCardBackground = (brand: string) => {
     switch (brand.toLowerCase()) {
@@ -87,15 +41,15 @@ export default function SavedPaymentMethods({
       <h3 className="text-sm font-medium">Saved Payment Methods</h3>
 
       <div className="space-y-3">
-        {paymentMethodsState.map((method) => (
+        {savedPaymentMethods.map((method) => (
           <div
             key={method.id}
             className={`relative border rounded-lg p-4 transition-all ${
-              selectedPaymentMethod === method.id
+              paymentData.selectedPaymentMethodId === method.id
                 ? "border-primary ring-1 ring-primary"
                 : "border-border hover:border-primary/50"
             } ${getCardBackground(method.cardBrand)}`}
-            onClick={() => onSelectPaymentMethod(method.id)}
+            onClick={() => selectPaymentMethod(method.id)}
           >
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
@@ -147,7 +101,7 @@ export default function SavedPaymentMethods({
                       <AlertDialogAction
                         onClick={(e) => {
                           e.stopPropagation()
-                          handleDelete(method.id)
+                          deletePaymentMethod(method.id)
                         }}
                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                       >
@@ -159,7 +113,7 @@ export default function SavedPaymentMethods({
               </div>
             </div>
 
-            {selectedPaymentMethod === method.id && (
+            {paymentData.selectedPaymentMethodId === method.id && (
               <div className="absolute top-1/2 -right-1.5 -translate-y-1/2 h-3 w-3 rounded-full bg-primary" />
             )}
           </div>
