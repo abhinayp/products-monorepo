@@ -11,6 +11,7 @@ module PaymentModule
         PaymentsProducer.charged(order_id: order_id)
         payment
       rescue => e
+        Rails.logger.error("Error charging order #{order_id}: #{e.message}")
         payment.update(status: 'failed') if payment
         PaymentsProducer.failed(order_id: order_id)
         payment
