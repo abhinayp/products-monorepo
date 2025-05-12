@@ -70,11 +70,13 @@ module OrderModule
         country: order_payment[:country]
       }
 
-      @order = Order.create(data)
-      @order.order_items.create(order_items)
-      @order.order_shipping.create(order_shipping)
-      @order.order_contact.create(order_contact)
-      @order.order_payment.create(order_payment)
+      ActiveRecord::Base.transaction do
+        @order = Order.create(data)
+        @order.order_items.create(order_items)
+        @order.order_shipping.create(order_shipping)
+        @order.order_contact.create(order_contact)
+        @order.order_payment.create(order_payment)
+      end
 
       return @order
     end
