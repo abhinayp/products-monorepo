@@ -10,7 +10,7 @@ const useOrder = (id: string | undefined) => {
     enabled: !!id,
   })
 
-  // Websocket to update real-time product metrics
+  // Websocket to update real-time order updates
   const orderWebsocket = useWebsockets({
     path: "/orders",
     managerOptions: {
@@ -22,13 +22,18 @@ const useOrder = (id: string | undefined) => {
 
 
   useEffect(() => {
+    // Listen for order updates
     orderWebsocket.socket?.current?.on("update", ({ order_id }: {
       order_id: number
     }) => {
+      // Log order update
       console.log(`updating order... ${order_id}`);
+
+      // Refetch order data
       refetch()
     })
 
+    // Cleanup
     return () => {
       orderWebsocket.socket?.current?.off("update")
     }
