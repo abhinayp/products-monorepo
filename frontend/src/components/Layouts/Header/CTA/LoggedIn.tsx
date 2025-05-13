@@ -28,6 +28,7 @@ const LoggedIn = () => {
         {/* <DropdownMenuItem>Profile</DropdownMenuItem>
         <DropdownMenuItem>Billing</DropdownMenuItem>
         <DropdownMenuItem>Team</DropdownMenuItem> */}
+        <DropdownMenuItem className="cursor-pointer" onClick={() => { location.href = '/orders' }}>Orders</DropdownMenuItem>
         <DropdownMenuItem className="text-destructive cursor-pointer" onClick={() => { location.href = '/logout' }}>Logout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

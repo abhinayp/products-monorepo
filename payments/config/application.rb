@@ -15,7 +15,9 @@ module Payments
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
-
+    config.autoload_paths << Rails.root.join('app/clients')
+    config.autoload_paths << Rails.root.join('app/modules')
+    config.autoload_paths << Rails.root.join('app/producers')
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
@@ -29,9 +31,8 @@ module Payments
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
-
     if ENV["APPLICATION_HOST"]
-      config.hosts << ENV["APPLICATION_HOST"]
+      config.hosts = config.hosts + ENV["APPLICATION_HOST"].split(',')
     end
   end
 end

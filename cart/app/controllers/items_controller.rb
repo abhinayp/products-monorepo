@@ -65,13 +65,11 @@ class ItemsController < ApplicationController
       return
     end
 
-    data = CartItem.remove_item(params[:id])
-    if data
-      cart = data[:cart]
-      CartProducer.update_metrics(product_id: cart.product_id, new_item_count: -1 * @item.count)
+    data = CartModule::CartHelper.remove_item(id: params[:id])
+    if data[:success]
       render json: data, status: :ok
     else
-      render json: { errors: "deletion failed" }, status: :unprocessable_entity
+      render json: { error: data[:error] }, status: :unprocessable_entity
     end
   end
 

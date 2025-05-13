@@ -40,6 +40,10 @@ Websockets - http://localhost:5001 or `ws://localhost:5001`
 
 **Cart Service** - A service that handles user cart like what items are in it, adding, deleting. Metrics like tax, subtotal, total.
 
+**Orders Service** - A service that takes in orders places by a user and keeps track of it
+
+**Payment Service** - A service that charges payment of an order
+
 **API Gateway** - Entrypoint to all microservices, /MICROSERVICE_NAME will redirect to respective microservice. this helps avoid too many environment or config variables for domains
 
 **Websockets** - Provide real time updates to browser for all active tabs. (Planning to make this part of api gateway instead of calling it directly)
@@ -57,7 +61,15 @@ Frontend should display a badge like "2 others added to cart" for each product. 
 Inventory service needs to know how many users added a products in to cart for all the products it returns.
 
 ### Implementation
+#### Use Case 1
+An order is placed, order is created in db by orders service and produces an event `order_created`.
 
+Payments Service consumes the `order_created` event order_created, charges the user for that order.
+After successful or failure of an payment charge, payments service produces an event `payment_charged` for order id and payment status
+
+Orders service consumes the `payment_charged` event and updates the status of the order based on payment status
+
+#### Use Case 2
 Cart service produces an event called `update_metrics` to a topic `cart` that will provide user count everytime someone adds, remove or update an item in cart.
 
 Inventory service listens to topic `cart` and to the event(`update_metrics`) and it updates the user count in db from event data
@@ -69,7 +81,7 @@ To have real time updates for an open tab, websockets service listens to same to
 
 ## Coming Soon
 
-Orders, Payments, Notifications are coming soon
+Notifications are coming soon
 
 ##
 ![Flowchart](./flowchart.png)

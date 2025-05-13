@@ -4,6 +4,8 @@ services:
   postgres:
     image: postgres:latest
     command: ["postgres", "-p", "5433"]
+    volumes:
+      - orders-db-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -28,14 +30,40 @@ services:
       DATABASE_DB: orders
       DATABASE_PORT: 5433
       PORT: 4002
-      APPLICATION_HOST: orders-server:4002
+      APPLICATION_HOST: orders-server:4002,api-gateway
+      CORS_ORIGINS: "http://localhost:3000"
+      API_GATEWAY_HOST: http://api-gateway
     ports:
       - "4002:4002"
     depends_on:
       - postgres
     container_name: orders-server
-
+  kafka-consumer:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev-build
+    entrypoint: ["bin/bundle"]
+    command: ["exec", "karafka", "server"]
+    volumes:
+      - .:/rails
+    environment:
+      DATABASE_HOST: orders-db
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+      DATABASE_DB: orders
+      DATABASE_PORT: 5433
+      PORT: 4002
+      APPLICATION_HOST: orders-server:4002,api-gateway
+      CORS_ORIGINS: "http://localhost:3000"
+      API_GATEWAY_HOST: http://api-gateway
+    depends_on:
+      - postgres
+    container_name: orders-consumer-group
 networks:
   default:
     external:
       name: products
+
+volumes:
+  orders-db-data:

@@ -1,23 +1,33 @@
 class HomeController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_server_or_user!, only: [:index, :destroy]
 
   def index
-    page = params[:page] || 1
-    page = page.to_i
-    offset = (page - 1) * 10
-    cart = CartItem.limit(20).offset(offset).where(user_id: current_user['id']).order(id: :desc)
-    cart_metadata = CartMetadata.find_by(user_id: current_user['id'])
+    user_id = current_user['id'] if @authorization_type == 'user'
+    user_id = params[:user_id] if @authorization_type == 'server'
 
-    cart_items_with_products = []
-    if cart.present?
-      products = InventoryClient::ProductsClient.new.get_all_products(cart.map(&:product_id))
-      cart_items_with_products = cart.map do |cart_item|
-        product = products.find { |product| product['id'] == cart_item.product_id }
-        cart_item.as_json.merge(product: product)
-      end
+    if user_id.blank?
+      render json: { error: 'User ID is required' }, status: :bad_request
+      return
     end
 
-    total = CartItem.where(user_id: current_user['id']).count
-    render json: { cart: cart_items_with_products, total: total, cart_metadata: cart_metadata }
+    data = CartModule::CartHelper.get_cart_data(page: params[:page], user_id: user_id)
+    render json: data
+  end
+
+  def destroy
+    user_id = current_user['id'] if @authorization_type == 'user'
+    user_id = params[:user_id] if @authorization_type == 'server'
+
+    if user_id.blank?
+      render json: { error: 'User ID is required' }, status: :bad_request
+      return
+    end
+
+    data = CartModule::CartHelper.clear_cart(user_id: user_id)
+    if data[:success]
+      render json: data, status: :ok
+    else
+      render json: { error: "Failed to clear cart" }, status: :unprocessable_entity
+    end
   end
 end

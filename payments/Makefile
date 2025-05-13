@@ -1,6 +1,6 @@
 .PHONY: up down migrate build reload restart install clean logs shell
 
-up: build install migrate
+up: build install migrate clear-server-pid
 	docker compose up -d
 
 down:
@@ -28,3 +28,6 @@ logs:
 
 shell:
 	docker compose exec server bash
+
+clear-server-pid:
+	rm -f tmp/pids/server.pid

@@ -1,9 +1,14 @@
 # frozen_string_literal: true
 
 # Example consumer that prints messages payloads
-class ExampleConsumer < ApplicationConsumer
+class OrdersConsumer < ApplicationConsumer
   def consume
-    messages.each { |message| puts message.payload }
+    messages.each do |message|
+      if message.payload['event'] == 'order_created'
+        order_id = message.payload['order_id']
+        PaymentModule::PaymentHelper.charge_order(order_id: order_id)
+      end
+    end
   end
 
   # Run anything upon partition being revoked

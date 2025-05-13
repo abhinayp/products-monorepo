@@ -4,12 +4,12 @@ import React from 'react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { ShoppingCart } from 'lucide-react'
-import { Item } from './Item'
+import { Item } from '../Item'
 import { formatToDollars } from '@/helpers/common.helper'
 import useCart from './useCart'
 
 function Cart() {
-  const { showCart, cartData, isLoading, cartTotal, setShowCart } = useCart()
+  const { showCart, cartData, isLoading, cartTotal, setShowCart, checkoutClicked, handleCheckoutClick } = useCart()
 
   return (
     <Sheet open={showCart} onOpenChange={setShowCart}>
@@ -55,7 +55,7 @@ function Cart() {
             <div className="border-t p-4">
               <div className="flex justify-between text-sm py-1">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span className="text-muted-foreground">{formatToDollars(cartData?.cart_metadata?.net_total_price || 0)}</span>
+                <span className="text-muted-foreground">{formatToDollars(cartData?.cart_metadata?.gross_total_price || 0)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Tax</span>
@@ -66,7 +66,9 @@ function Cart() {
                 <span className="font-medium">{formatToDollars(cartTotal)}</span>
               </div>
               <div className="pt-2">
-                <Button className="w-full">Checkout</Button>
+                <Button className="w-full" onClick={handleCheckoutClick} disabled={checkoutClicked}>
+                  {checkoutClicked ? 'Redirecting...' : 'Checkout'}
+                </Button>
               </div>
             </div>
           </div>
