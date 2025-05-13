@@ -16,7 +16,7 @@ module PaymentModule
         # Update payment status to completed
         payment.update(status: 'completed')
 
-        # Produce charged event to payments service
+        # Produce charged event to payments topic
         PaymentsProducer.charged(order_id: order_id)
 
         # Return payment
@@ -28,7 +28,7 @@ module PaymentModule
         # Update payment status to failed
         payment.update(status: 'failed') if payment
 
-        # Produce failed event to payments service
+        # Produce failed event to payments topic
         PaymentsProducer.failed(order_id: order_id)
 
         # Return payment
