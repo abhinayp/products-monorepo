@@ -54,14 +54,9 @@ Websockets - http://localhost:5001 or `ws://localhost:5001`
 
 Frontend makes api calls to inventory service to load all products on home page and to cart service to get what items are in the cart.
 
-### Requirement
-Frontend should display a badge like "2 others added to cart" for each product. \
-<img src="./product_badge1.png" width="200" alt="Product Badge">
-
-Inventory service needs to know how many users added a products in to cart for all the products it returns.
-
 ### Implementation
 #### Use Case 1
+<img src="./events-use-case-1.gif" width="100%" alt="Events"> \
 An order is placed, order is created in db by orders service and produces an event `order_created`.
 
 Payments Service consumes the `order_created` event order_created, charges the user for that order.
